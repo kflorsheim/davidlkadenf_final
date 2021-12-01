@@ -1,0 +1,310 @@
+---
+title: "KadenFlorsheimDavidLüdeke_Final"
+author: "Kaden Florsheim"
+date: "11/14/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = F, warning = F, message = F)
+```
+
+```{r}
+library(tidyverse)
+library(sf)
+library(tigris)
+library(mapview)
+library(leaflet)
+library(censusapi)
+Sys.setenv(CENSUS_KEY="9fbd5ddd430b595b8f3715733cae2b75c18be92e")
+```
+
+```{r}
+pums_2019_1yr <- getCensus(
+  name = "acs/acs1/pums",
+  vintage = 2019,
+  region = "public use microdata area:*", 
+  regionin = "state:06",
+  vars = c(
+    "SERIALNO", #Unique ID for each household
+    "SPORDER",
+    "PWGTP", #Total number of people
+    "WGTP",
+    "HINCP",
+    "CPLT",
+    "FINCP",
+    "PINCP",
+    "RAC1P"
+  )
+)
+```
+
+```{r}
+ca_pumas <-
+  pumas("CA", cb = T, progress_bar = F)
+
+bay_county_names <-
+  c(
+    "Alameda",
+    "Contra Costa",
+    "Marin",
+    "Napa",
+    "San Francisco",
+    "San Mateo",
+    "Santa Clara",
+    "Solano",
+    "Sonoma"
+  )
+
+bay_counties <-
+  counties("CA", cb = T, progress_bar = F) %>%
+  filter(NAME %in% bay_county_names)
+
+bay_pumas <-
+  ca_pumas %>% 
+  st_centroid() %>% 
+  .[bay_counties, ] %>% 
+  st_drop_geometry() %>% 
+  left_join(ca_pumas %>% select(GEOID10)) %>% 
+  st_as_sf()
+
+ca_pums <-
+  pums_2019_1yr %>% 
+  mutate(
+    PUMA = str_pad(public_use_microdata_area,5,"left","0")
+  ) %>% 
+  filter(PUMA %in% ca_pumas$PUMACE10)
+```
+
+```{r}
+cleaned <- ca_pums %>%
+  mutate(
+    SPORDER = as.numeric(SPORDER),
+    CPLT = as.numeric(CPLT)
+  ) %>% 
+  filter(
+    (SPORDER %in% 1:2), #assuming person 1 and 2 are the partners
+    (CPLT %in% 1:4)) #filtering out N/A
+```
+
+```{r}
+bay_pums_couple <-
+  cleaned %>%
+  mutate(
+    WGTP = as.numeric(WGTP),
+    Same_sex_household = ifelse(
+        (CPLT == 2)|(CPLT == 4), 
+        
+      1,
+      0
+    ),
+    Opposite_sex_household = ifelse(
+        (CPLT == 1)|(CPLT == 3),
+      1,
+      0
+    ),
+    White_Low_Income = ifelse(
+      (RAC1P == 1) & (HINCP > 100000),
+      1,
+      0
+    ),
+    Not_White_Low_Income = ifelse(
+      (RAC1P != 1) & (HINCP > 100000),
+      1,
+      0)) 
+```
+
+```{r}
+bay_pums_couple <-
+  cleaned %>% 
+  Same_sex_household = ifelse(
+        (CPLT == 2)|(CPLT == 4), 
+        WGTP,
+        0)
+# %>% 
+  # group_by(PUMA) %>% 
+  # summarize(
+  #   PERSON1 =
+  #     sum(Person1, na.rm =T)
+  # ) 
+```
+```
+
+```{r}
+bay_pums_couple <-
+  cleaned %>%
+  mutate(
+    WGTP = as.numeric(WGTP),
+    SPORDER = as.numeric(SPORDER),
+    partner1 = ifelse(
+      (SPORDER == 1),
+      WGTP,
+      0
+    ),
+    partner2 = ifelse(
+      (SPORDER == 2),
+      WGTP,
+      0
+    ) %>% 
+  group_by(PUMA) %>%
+  summarize(
+    partner1 =
+      sum(partner1, na.rm =T),
+    partner2 =
+      sum(partner2, na.rm =T))
+  )
+```
+
+
+
+    
+    ,
+    Same_sex_household = ifelse(
+      (HINCP < 100000) &
+        (CPLT == 2)|(CPLT == 4), 
+        
+      WGTP,
+      0
+    ),
+    Opposite_sex_household = ifelse(
+      (HINCP < 100000) &
+        (CPLT == 1)|(CPLT == 3),
+      WGTP,
+      0
+    ),
+    White = ifelse(
+      (SERIALNO == 1) &
+      (RAC1P == 1),
+      WGTP,
+      0
+    )
+    
+    
+    ) %>% 
+  group_by(PUMA) %>%
+  summarize(
+    sum_same_sex_household =
+      sum(Same_sex_household, na.rm =T),
+    sum_opposite_sex_household =
+      sum(Opposite_sex_household, na.rm =T),
+    partner1 =
+      sum(partner1, na.rm =T),
+    partner2 =
+      sum(partner2, na.rm =T)%>% 
+  left_join(
+    bay_pumas %>% 
+      select(PUMACE10),
+    by = c("PUMA" = "PUMACE10")
+  ) %>% 
+  st_as_sf()
+  ) 
+```
+
+```{r}
+bay_pums_couple <-
+  cleaned %>%
+  mutate(
+    WGTP = as.numeric(WGTP),
+    partner1 = ifelse(
+      (SPORDER == 1),
+      WGTP,
+      0
+    ),
+    partner2 = ifelse(
+      (SPORDER == 2),
+      WGTP,
+      0
+    ),
+    Same_sex_household = ifelse(
+      (HINCP < 100000) &
+        (CPLT == 2)|(CPLT == 4), 
+        
+      WGTP,
+      0
+    ),
+    Opposite_sex_household = ifelse(
+      (HINCP < 100000) &
+        (CPLT == 1)|(CPLT == 3),
+      WGTP,
+      0
+    ),
+    White = ifelse(
+      (SERIALNO == 1) &
+      (RAC1P == 1),
+      WGTP,
+      0
+    )
+    
+
+
+
+
+```
+
+
+```{r}
+acs_vars_2019_5yr <-
+  listCensusMetadata(
+    name = "2019/acs/acs5",
+    type = "variables"
+  )
+```
+
+
+```{r}
+veteran <-
+    getCensus(
+      name = "acs/acs5",
+      vintage = 2019,
+      region = "county:055",
+      regionin = "state:06",
+      vars = "group(S2101)" 
+    ) %>%
+      select(!c(GEO_ID,state,NAME,county) & !ends_with(c("EA","MA","M"))) %>%
+      pivot_longer(
+        ends_with("E"),
+        names_to = "name",
+        values_to = "estimate"
+      ) %>%
+      left_join(
+        acs_vars_2019_5yr %>% 
+          select(name, label)
+      )
+```
+
+##How would we filter out just first two people to determine their races? Is sample size too small?
+
+
+##Veterans, Jobs, Race< which war, income
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
