@@ -70,8 +70,36 @@ cleaned <- ca_pums %>%
   ) %>% 
   filter(
     (SPORDER %in% 1:2), #assuming person 1 and 2 are the partners
-    (CPLT %in% 1:4)) #filtering out N/A
+    (CPLT %in% 1:4)) %>% #filtering out N/A
+  select(-public_use_microdata_area)
 ```
+
+```{r}
+cleaned %>% 
+  group_by(CPLT, RAC1P) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  ggplot() +
+  geom_bar(
+    aes(
+      x = CPLT,
+      y = estimate,
+      fill = RAC1P
+    ),
+    stat = "identity",
+    position = "stack"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "Bay Area household income by race",
+    fill = "Race of householder"
+  )
+```
+
+
+
+
+
 
 ```{r}
 ca_pums_IRC <-
