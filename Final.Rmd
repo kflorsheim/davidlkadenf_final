@@ -16,6 +16,7 @@ library(tigris)
 library(mapview)
 library(leaflet)
 library(censusapi)
+library(gtools)
 Sys.setenv(CENSUS_KEY="9fbd5ddd430b595b8f3715733cae2b75c18be92e")
 ```
 
@@ -110,7 +111,7 @@ ca_pums_IRC <-
     ),
     income = ifelse(
       (HINCP > 40000 & HINCP <= 50000),
-       "40,001 to $50,000",
+       "$40,001 to $50,000",
       income
     ),
     income = ifelse(
@@ -154,19 +155,11 @@ ca_pums_IRC <-
     #   "More than 50,000"}
     # )
 
-
-      
-      
-
-      
-
-    
-    
-    
-
-      
 ```  
 
+```{r}
+order <- c( "$10,000 or less", "$10,001 to $20000","$20,001 to $30,000","$30,001 to $40,000","$40,001 to $50,000","$50,001 to $75,000","$75,001 to $100,000","$100,001 to $150,000","$150,001 to $200,000","$200,001 or more")
+```
  
 ```{r}
 ca_pums_IRC %>% 
@@ -175,7 +168,7 @@ ca_pums_IRC %>%
   ggplot() +
   geom_bar(
     aes(
-      x = income,
+      x = income %>% factor(mixedsort(order)),
       y = estimate,
       fill = Same_sex_household
     ),
@@ -187,7 +180,8 @@ ca_pums_IRC %>%
     y = "Number of households",
     title = "Bay Area household income by couple type",
     fill = "Couple Type"
-  )
+  ) +
+  coord_flip()
 ```
 
 
