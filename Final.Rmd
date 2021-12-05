@@ -27,14 +27,14 @@ pums_2019_1yr <- getCensus(
   regionin = "state:06",
   vars = c(
     "SERIALNO", #Unique ID for each household
-    "SPORDER",
+    "SPORDER", #Person number
     "PWGTP", #Total number of people
-    "WGTP",
-    "HINCP",
-    "CPLT",
-    "FINCP",
-    "PINCP",
-    "RAC1P"
+    "WGTP", #Housing Weight
+    "HINCP", #Household Income
+    "CPLT", #Couple Type
+    "FINCP", #Family Income
+    "PINCP", #Total Persons Income
+    "RAC1P" #Recorded Detailed Race Code
   )
 )
 ```
@@ -43,27 +43,13 @@ pums_2019_1yr <- getCensus(
 ca_pumas <-
   pumas("CA", cb = T, progress_bar = F)
 
-bay_county_names <-
-  c(
-    "Alameda",
-    "Contra Costa",
-    "Marin",
-    "Napa",
-    "San Francisco",
-    "San Mateo",
-    "Santa Clara",
-    "Solano",
-    "Sonoma"
-  )
+counties <-
+  counties("CA", cb = T, progress_bar = F)
 
-bay_counties <-
-  counties("CA", cb = T, progress_bar = F) %>%
-  filter(NAME %in% bay_county_names)
-
-bay_pumas <-
+ca_pumas <-
   ca_pumas %>% 
   st_centroid() %>% 
-  .[bay_counties, ] %>% 
+  .[counties, ] %>% 
   st_drop_geometry() %>% 
   left_join(ca_pumas %>% select(GEOID10)) %>% 
   st_as_sf()
@@ -88,13 +74,13 @@ cleaned <- ca_pums %>%
 ```
 
 ```{r}
-bay_pums_couple <-
+ca_pums_IRC <-
   cleaned %>%
   mutate(
-    WGTP = as.numeric(WGTP),
+    PWGTP = as.numeric(PWGTP),
     Same_sex_household = ifelse(
         (CPLT == 2)|(CPLT == 4), 
-        
+
       1,
       0
     ),
@@ -102,7 +88,147 @@ bay_pums_couple <-
         (CPLT == 1)|(CPLT == 3),
       1,
       0
-    ),
+    ))
+    
+    
+    
+    
+    # IR = ifelse(
+    #   SERIALNO == SERIALNO|RAC1P!=RAC1P,
+    #   1,
+    #   0
+    # )
+    # )
+    # 
+    # 
+
+# IRC_compare <-   #Attempting to pull out Interracial couples into new data set so we can compare races
+#   ca_pums_IRC %>% 
+#   mutate(
+#     PWGTP = as.numeric(PWGTP),
+#     SERIALNO = as.numeric(SERIALNO)) %>% 
+#   if(SERIALNO == SERIALNO) {
+#     mutate(
+#     PWGTP = as.numeric(PWGTP),
+#     Same_sex_household = ifelse(
+#         (CPLT == 2)|(CPLT == 4), 
+# 
+#       1,
+#       0
+#     )) 
+#   }
+##Can't figure out how to separate interracial couples--Trying to do if statement
+#if {same serialno but different races put them in this data set or create new column}
+```
+    
+```{r}
+census_race_categories <- data.frame(
+  code = c(1,2,3,4,5,6,7,8,9),
+  category =
+    c(
+      "White alone",
+      "Black or African American alone",
+      "American Indian alone",
+      "Alaska Native alone",
+      "American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races",
+       "Asian alone",
+       "Native Hawaiian and Other Pacific Islander alone",
+       "Some Other Race alone",
+       "Two or More Races"
+    ))
+```
+  
+```{r}
+census_race_categories <-
+  c(
+      "White alone",
+      "Black or African American alone",
+      "American Indian alone",
+      "Alaska Native alone",
+      "American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races",
+       "Asian alone",
+       "Native Hawaiian and Other Pacific Islander alone",
+       "Some Other Race alone",
+       "Two or More Races")
+```
+
+```{r}
+ca_income_race <- 
+  1:9 %>% 
+  map_dfr(function(x){
+    getCensus(
+      name = "acs/acs1/pums",
+      vintage = 2019,
+      region = "public use microdata area:*", 
+      regionin = "state:06",
+      vars = c(
+        "SERIALNO", #Unique ID for each household
+        "SPORDER", #Person number
+        "PWGTP", #Total number of people
+        "WGTP", #Housing Weight
+        "HINCP", #Household Income
+        "CPLT", #Couple Type
+        "FINCP", #Family Income
+        "PINCP", #Total Persons Income
+        "RAC1P" #Recorded Detailed Race Code
+      )
+    ) %>%
+      select(!c(GEO_ID,state,NAME) & !ends_with(c("EA","MA","M"))) %>%
+      pivot_longer(
+        ends_with("E"),
+        names_to = "name",
+        values_to = "estimate"
+      ) %>%
+      left_join(
+        ca_pums %>% 
+          select(name, label)
+      ) %>% 
+      select(-name) %>% 
+      separate(
+        label,
+        into = c(NA,NA,"income"),
+        sep = "!!"
+      ) %>% 
+      filter(!is.na(income)) %>% 
+      mutate(race = census_race_categories[x])
+  })
+```
+ 
+```{r}
+ca_cup <-
+  getCensus(
+      name = "acs/acs1/pums",
+      vintage = 2019,
+      region = "public use microdata area:*", 
+      regionin = "state:06",
+      vars = c(
+        "SERIALNO", #Unique ID for each household
+        "SPORDER", #Person number
+        "PWGTP", #Total number of people
+        "WGTP", #Housing Weight
+        "HINCP", #Household Income
+        "CPLT", #Couple Type
+        "FINCP", #Family Income
+        "PINCP", #Total Persons Income
+        "RAC1P") #Recorded Detailed Race Code
+  ) %>%
+  left_join(
+    ca_pums_IRC %>% 
+      select(SERIALNO, public_use_microdata_area)
+  ) 
+
+```
+%>% 
+  select(-name) %>% 
+  separate(
+    label,
+    into = c(NA,NA,"income"),
+    sep = "!!"
+  ) %>% 
+  filter(!is.na(income))
+```  
+  
+  ,
     White_Low_Income = ifelse(
       (RAC1P == 1) & (HINCP > 100000),
       1,
@@ -276,6 +402,19 @@ veteran <-
 
 
 ##Veterans, Jobs, Race< which war, income
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
