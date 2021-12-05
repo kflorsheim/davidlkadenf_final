@@ -4,7 +4,7 @@ author: "Kaden Florsheim"
 date: "11/14/2021"
 output: html_document
 ---
-#o
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = F, warning = F, message = F)
 ```
@@ -74,30 +74,6 @@ cleaned <- ca_pums %>%
   select(-public_use_microdata_area)
 ```
 
-```{r}
-cleaned %>% 
-  group_by(CPLT, RAC1P) %>% 
-  summarize(estimate = sum(PWGTP)) %>% 
-  ggplot() +
-  geom_bar(
-    aes(
-      x = CPLT,
-      y = estimate,
-      fill = RAC1P
-    ),
-    stat = "identity",
-    position = "stack"
-  ) +
-  labs(
-    x = "Household income",
-    y = "Number of households",
-    title = "Bay Area household income by race",
-    fill = "Race of householder"
-  )
-```
-
-
-
 
 
 
@@ -106,19 +82,98 @@ ca_pums_IRC <-
   cleaned %>%
   mutate(
     PWGTP = as.numeric(PWGTP),
+    HINCP = as.numeric(HINCP),
     Same_sex_household = ifelse(
         (CPLT == 2)|(CPLT == 4), 
-
-      1,
-      0
+      "Same sex couple",
+      "Opposite sex couple"
     ),
-    Opposite_sex_household = ifelse(
-        (CPLT == 1)|(CPLT == 3),
-      1,
+    income =  ifelse(
+      (HINCP <= 10000),
+       "Less than $10,000",
+      HINCP
+    ),
+    income = ifelse(
+      (HINCP > 10000 & HINCP <= 20000),
+       "$10,000 to $20000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 20000 & HINCP <= 30000),
+       "$20,000 to $30,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 30000 & HINCP <= 50000),
+       "$30,000 to $50,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 50000),
+       "More than $50,000",
+      income
+    ))
+      
+      
+    #   if(HINCP < 10000){
+    #   "Less than $10,000"
+    # } else if (HINCP > 10001 & HINCP > 14999){
+    #   "10,000 to 14,999"
+    # } else if (HINCP > 15000 & HINCP > 19999){
+    #   "15,000 to 19,999"
+    # } else if (HINCP > 20000 & HINCP > 24999){
+    #   "20,000 to 24,999"
+    # } else if (HINCP > 25000 & HINCP > 49000){
+    #   "25,000 to 49,000"
+    # } else {
+    #   "More than 50,000"}
+    # )
+
+
+      
+      
+
+      
+
+    
+    
+    
+
+      
+```  
+
+ 
+```{r}
+ca_pums_IRC %>% 
+  group_by(income, Same_sex_household) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  ggplot() +
+  geom_bar(
+    aes(
+      x = income,
+      y = estimate,
+      fill = Same_sex_household
+    ),
+    stat = "identity",
+    position = "stack"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "Bay Area household income by couple type",
+    fill = "Couple Type"
+  )
+```
+
+
+      (HINCP < 10000),
+      "Less than 10,000",
+      (HINCP > 10000),
+      "More than 10,000",
       0
     ))
     
-    
+   
     
     
     # IR = ifelse(
@@ -148,6 +203,32 @@ ca_pums_IRC <-
 ##Can't figure out how to separate interracial couples--Trying to do if statement
 #if {same serialno but different races put them in this data set or create new column}
 ```
+ 
+```{r}
+ca_pums_IRC %>% 
+  group_by(HINCP, Same_sex_household) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  ggplot() +
+  geom_bar(
+    aes(
+      x = HINCP,
+      y = estimate,
+      fill = Same_sex_household
+    ),
+    stat = "identity",
+    position = "stack"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "Bay Area household income by couple type",
+    fill = "Couple Type"
+  )
+``` 
+ 
+ 
+ 
+ 
     
 ```{r}
 census_race_categories <- data.frame(
