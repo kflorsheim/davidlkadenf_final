@@ -76,8 +76,6 @@ cleaned <- ca_pums %>%
 ```
 
 
-
-
 ```{r}
 ca_pums_IRC <-
   cleaned %>%
@@ -199,7 +197,7 @@ white <- cleaned %>%
     RAC1P = as.numeric(RAC1P)
   ) %>% 
   filter(
-    (RAC1P %in% 1)) #white
+    (RAC1P %in% 1)) #white alone
 ```
 
 
@@ -266,7 +264,7 @@ ca_pums_IRC <-
     ))
 ```
 
-
+## White Alone
 ```{r}
 ca_pums_IRC %>% 
   group_by(income, Same_sex_household) %>% 
@@ -299,30 +297,22 @@ ca_pums_IRC %>%
   )
 
 ```
-```{r}
-census_race_categories <-
-  c(
-      "White alone",
-      "Black or African American alone",
-      "American Indian alone",
-      "Alaska Native alone",
-      "American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races",
-       "Asian alone",
-       "Native Hawaiian and Other Pacific Islander alone",
-       "Some Other Race alone",
-       "Two or More Races")
-```
+
+
 
 ```{r}
-ca_income_race <- 
-  1:9 %>% 
-  map_dfr(function(x){
-    race <- cleaned %>%
+black <- cleaned %>%
   mutate(
     RAC1P = as.numeric(RAC1P)
   ) %>% 
   filter(
-    (RAC1P %in% census_race_categories[x])) %>% 
+    (RAC1P %in% 2)) #black or African American alone
+```
+
+
+```{r}
+ca_pums_IRC <-
+  black %>%
   mutate(
     PWGTP = as.numeric(PWGTP),
     HINCP = as.numeric(HINCP),
@@ -380,7 +370,12 @@ ca_income_race <-
       (HINCP > 200000),
        "$200,001 or more",
       income
-    )) %>% 
+    ))
+```
+
+## Black or African American alone
+```{r}
+ca_pums_IRC %>% 
   group_by(income, Same_sex_household) %>% 
   summarize(estimate = sum(PWGTP)) %>% 
   ggplot() +
@@ -409,108 +404,92 @@ ca_income_race <-
       reverse = T
     )
   )
-  })
 
-```          
-          
-          
-          
-          
-    getCensus(
-      name = "acs/acs1/pums",
-      vintage = 2019,
-      region = "public use microdata area:*", 
-      regionin = "state:06",
-      vars = c(
-        "SERIALNO", #Unique ID for each household
-        "SPORDER", #Person number
-        "PWGTP", #Total number of people
-        "WGTP", #Housing Weight
-        "HINCP", #Household Income
-        "CPLT", #Couple Type
-        "FINCP", #Family Income
-        "PINCP", #Total Persons Income
-        "RAC1P" #Recorded Detailed Race Code
-      )
-    ) %>%
-      select(!c(GEO_ID,state,NAME) & !ends_with(c("EA","MA","M"))) %>%
-      pivot_longer(
-        ends_with("E"),
-        names_to = "name",
-        values_to = "estimate"
-      ) %>%
-      left_join(
-        ca_pums %>% 
-          select(name, label)
-      ) %>% 
-      select(-name) %>% 
-      separate(
-        label,
-        into = c(NA,NA,"income"),
-        sep = "!!"
-      ) %>% 
-      filter(!is.na(income)) %>% 
-      mutate(race = census_race_categories[x])
-  })
 ```
 
 
+```{r}
+American_Indian <- cleaned %>%
+  mutate(
+    RAC1P = as.numeric(RAC1P)
+  ) %>% 
+  filter(
+    (RAC1P %in% 3)) #American Indian
+```
 
 
-
-
-
-
-
-
-
-
-      (HINCP < 10000),
-      "Less than 10,000",
-      (HINCP > 10000),
-      "More than 10,000",
-      0
+```{r}
+ca_pums_IRC <-
+  American_Indian %>%
+  mutate(
+    PWGTP = as.numeric(PWGTP),
+    HINCP = as.numeric(HINCP),
+    Same_sex_household = ifelse(
+        (CPLT == 2)|(CPLT == 4), 
+      "Same sex couple",
+      "Opposite sex couple"
+    ),
+    income =  ifelse(
+      (HINCP <= 10000),
+       "$10,000 or less",
+      HINCP
+    ),
+    income = ifelse(
+      (HINCP > 10000 & HINCP <= 20000),
+       "$10,001 to $20000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 20000 & HINCP <= 30000),
+       "$20,001 to $30,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 30000 & HINCP <= 40000),
+       "$30,001 to $40,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 40000 & HINCP <= 50000),
+       "$40,001 to $50,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 50000 & HINCP <= 75000),
+       "$50,001 to $75,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 75000 & HINCP <= 100000),
+       "$75,001 to $100,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 100000 & HINCP <= 150000),
+       "$100,001 to $150,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 150000 & HINCP <= 200000),
+       "$150,001 to $200,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 200000),
+       "$200,001 or more",
+      income
     ))
-    
-   
-    
-    
-    # IR = ifelse(
-    #   SERIALNO == SERIALNO|RAC1P!=RAC1P,
-    #   1,
-    #   0
-    # )
-    # )
-    # 
-    # 
-
-# IRC_compare <-   #Attempting to pull out Interracial couples into new data set so we can compare races
-#   ca_pums_IRC %>% 
-#   mutate(
-#     PWGTP = as.numeric(PWGTP),
-#     SERIALNO = as.numeric(SERIALNO)) %>% 
-#   if(SERIALNO == SERIALNO) {
-#     mutate(
-#     PWGTP = as.numeric(PWGTP),
-#     Same_sex_household = ifelse(
-#         (CPLT == 2)|(CPLT == 4), 
-# 
-#       1,
-#       0
-#     )) 
-#   }
-##Can't figure out how to separate interracial couples--Trying to do if statement
-#if {same serialno but different races put them in this data set or create new column}
 ```
- 
+
+## Indian American Alone
 ```{r}
 ca_pums_IRC %>% 
-  group_by(HINCP, Same_sex_household) %>% 
+  group_by(income, Same_sex_household) %>% 
   summarize(estimate = sum(PWGTP)) %>% 
   ggplot() +
   geom_bar(
     aes(
-      x = HINCP,
+      x = income %>% factor(mixedsort(order)),
       y = estimate,
       fill = Same_sex_household
     ),
@@ -522,301 +501,903 @@ ca_pums_IRC %>%
     y = "Number of households",
     title = "Bay Area household income by couple type",
     fill = "Couple Type"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  )  +
+  guides(
+    fill = guide_legend(
+      reverse = T
+    )
   )
-``` 
- 
- 
- 
- 
-    
+
+```
+
+## Asian American Alone
 ```{r}
-census_race_categories <- data.frame(
-  code = c(1,2,3,4,5,6,7,8,9),
-  category =
-    c(
-      "White alone",
-      "Black or African American alone",
-      "American Indian alone",
-      "Alaska Native alone",
-      "American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races",
-       "Asian alone",
-       "Native Hawaiian and Other Pacific Islander alone",
-       "Some Other Race alone",
-       "Two or More Races"
+asian <- cleaned %>%
+  mutate(
+    RAC1P = as.numeric(RAC1P)
+  ) %>% 
+  filter(
+    (RAC1P %in% 6)) #Asian American Alone
+```
+
+
+```{r}
+ca_pums_IRC <-
+  asian %>%
+  mutate(
+    PWGTP = as.numeric(PWGTP),
+    HINCP = as.numeric(HINCP),
+    Same_sex_household = ifelse(
+        (CPLT == 2)|(CPLT == 4), 
+      "Same sex couple",
+      "Opposite sex couple"
+    ),
+    income =  ifelse(
+      (HINCP <= 10000),
+       "$10,000 or less",
+      HINCP
+    ),
+    income = ifelse(
+      (HINCP > 10000 & HINCP <= 20000),
+       "$10,001 to $20000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 20000 & HINCP <= 30000),
+       "$20,001 to $30,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 30000 & HINCP <= 40000),
+       "$30,001 to $40,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 40000 & HINCP <= 50000),
+       "$40,001 to $50,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 50000 & HINCP <= 75000),
+       "$50,001 to $75,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 75000 & HINCP <= 100000),
+       "$75,001 to $100,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 100000 & HINCP <= 150000),
+       "$100,001 to $150,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 150000 & HINCP <= 200000),
+       "$150,001 to $200,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 200000),
+       "$200,001 or more",
+      income
     ))
 ```
-  
-```{r}
-census_race_categories <-
-  c(
-      "White alone",
-      "Black or African American alone",
-      "American Indian alone",
-      "Alaska Native alone",
-      "American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races",
-       "Asian alone",
-       "Native Hawaiian and Other Pacific Islander alone",
-       "Some Other Race alone",
-       "Two or More Races")
-```
+
 
 ```{r}
-ca_income_race <- 
-  1:9 %>% 
-  map_dfr(function(x){
-    getCensus(
-      name = "acs/acs1/pums",
-      vintage = 2019,
-      region = "public use microdata area:*", 
-      regionin = "state:06",
-      vars = c(
-        "SERIALNO", #Unique ID for each household
-        "SPORDER", #Person number
-        "PWGTP", #Total number of people
-        "WGTP", #Housing Weight
-        "HINCP", #Household Income
-        "CPLT", #Couple Type
-        "FINCP", #Family Income
-        "PINCP", #Total Persons Income
-        "RAC1P" #Recorded Detailed Race Code
-      )
-    ) %>%
-      select(!c(GEO_ID,state,NAME) & !ends_with(c("EA","MA","M"))) %>%
-      pivot_longer(
-        ends_with("E"),
-        names_to = "name",
-        values_to = "estimate"
-      ) %>%
-      left_join(
-        ca_pums %>% 
-          select(name, label)
-      ) %>% 
-      select(-name) %>% 
-      separate(
-        label,
-        into = c(NA,NA,"income"),
-        sep = "!!"
-      ) %>% 
-      filter(!is.na(income)) %>% 
-      mutate(race = census_race_categories[x])
-  })
-```
- 
-```{r}
-ca_cup <-
-  getCensus(
-      name = "acs/acs1/pums",
-      vintage = 2019,
-      region = "public use microdata area:*", 
-      regionin = "state:06",
-      vars = c(
-        "SERIALNO", #Unique ID for each household
-        "SPORDER", #Person number
-        "PWGTP", #Total number of people
-        "WGTP", #Housing Weight
-        "HINCP", #Household Income
-        "CPLT", #Couple Type
-        "FINCP", #Family Income
-        "PINCP", #Total Persons Income
-        "RAC1P") #Recorded Detailed Race Code
-  ) %>%
-  left_join(
-    ca_pums_IRC %>% 
-      select(SERIALNO, public_use_microdata_area)
-  ) 
-
-```
-%>% 
-  select(-name) %>% 
-  separate(
-    label,
-    into = c(NA,NA,"income"),
-    sep = "!!"
-  ) %>% 
-  filter(!is.na(income))
-```  
-  
-  ,
-    White_Low_Income = ifelse(
-      (RAC1P == 1) & (HINCP > 100000),
-      1,
-      0
+ca_pums_IRC %>% 
+  group_by(income, Same_sex_household) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  ggplot() +
+  geom_bar(
+    aes(
+      x = income %>% factor(mixedsort(order)),
+      y = estimate,
+      fill = Same_sex_household
     ),
-    Not_White_Low_Income = ifelse(
-      (RAC1P != 1) & (HINCP > 100000),
-      1,
-      0)) 
+    stat = "identity",
+    position = "stack"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "Bay Area household income by couple type",
+    fill = "Couple Type"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  )  +
+  guides(
+    fill = guide_legend(
+      reverse = T
+    )
+  )
+
 ```
 
+## Some Other Race alone
 ```{r}
-bay_pums_couple <-
-  cleaned %>% 
-  Same_sex_household = ifelse(
+other <- cleaned %>%
+  mutate(
+    RAC1P = as.numeric(RAC1P)
+  ) %>% 
+  filter(
+    (RAC1P %in% 8)) #Some Other Race alone
+```
+
+
+```{r}
+ca_pums_IRC <-
+  other %>%
+  mutate(
+    PWGTP = as.numeric(PWGTP),
+    HINCP = as.numeric(HINCP),
+    Same_sex_household = ifelse(
         (CPLT == 2)|(CPLT == 4), 
-        WGTP,
-        0)
+      "Same sex couple",
+      "Opposite sex couple"
+    ),
+    income =  ifelse(
+      (HINCP <= 10000),
+       "$10,000 or less",
+      HINCP
+    ),
+    income = ifelse(
+      (HINCP > 10000 & HINCP <= 20000),
+       "$10,001 to $20000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 20000 & HINCP <= 30000),
+       "$20,001 to $30,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 30000 & HINCP <= 40000),
+       "$30,001 to $40,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 40000 & HINCP <= 50000),
+       "$40,001 to $50,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 50000 & HINCP <= 75000),
+       "$50,001 to $75,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 75000 & HINCP <= 100000),
+       "$75,001 to $100,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 100000 & HINCP <= 150000),
+       "$100,001 to $150,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 150000 & HINCP <= 200000),
+       "$150,001 to $200,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 200000),
+       "$200,001 or more",
+      income
+    ))
+```
+
+
+```{r}
+ca_pums_IRC %>% 
+  group_by(income, Same_sex_household) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  ggplot() +
+  geom_bar(
+    aes(
+      x = income %>% factor(mixedsort(order)),
+      y = estimate,
+      fill = Same_sex_household
+    ),
+    stat = "identity",
+    position = "stack"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "Bay Area household income by couple type",
+    fill = "Couple Type"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  )  +
+  guides(
+    fill = guide_legend(
+      reverse = T
+    )
+  )
+
+```
+
+## Two or More Races
+```{r}
+two <- cleaned %>%
+  mutate(
+    RAC1P = as.numeric(RAC1P)
+  ) %>% 
+  filter(
+    (RAC1P %in% 8)) #two or more races
+```
+
+
+```{r}
+ca_pums_IRC <-
+  two %>%
+  mutate(
+    PWGTP = as.numeric(PWGTP),
+    HINCP = as.numeric(HINCP),
+    Same_sex_household = ifelse(
+        (CPLT == 2)|(CPLT == 4), 
+      "Same sex couple",
+      "Opposite sex couple"
+    ),
+    income =  ifelse(
+      (HINCP <= 10000),
+       "$10,000 or less",
+      HINCP
+    ),
+    income = ifelse(
+      (HINCP > 10000 & HINCP <= 20000),
+       "$10,001 to $20000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 20000 & HINCP <= 30000),
+       "$20,001 to $30,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 30000 & HINCP <= 40000),
+       "$30,001 to $40,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 40000 & HINCP <= 50000),
+       "$40,001 to $50,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 50000 & HINCP <= 75000),
+       "$50,001 to $75,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 75000 & HINCP <= 100000),
+       "$75,001 to $100,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 100000 & HINCP <= 150000),
+       "$100,001 to $150,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 150000 & HINCP <= 200000),
+       "$150,001 to $200,000",
+      income
+    ),
+    income = ifelse(
+      (HINCP > 200000),
+       "$200,001 or more",
+      income
+    ))
+```
+
+
+```{r}
+ca_pums_IRC %>% 
+  group_by(income, Same_sex_household) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  ggplot() +
+  geom_bar(
+    aes(
+      x = income %>% factor(mixedsort(order)),
+      y = estimate,
+      fill = Same_sex_household
+    ),
+    stat = "identity",
+    position = "stack"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "Bay Area household income by couple type",
+    fill = "Couple Type"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  )  +
+  guides(
+    fill = guide_legend(
+      reverse = T
+    )
+  )
+# Could not include 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 
+# ```{r}
+# census_race_categories <-
+#   c(
+#       "White alone",
+#       "Black or African American alone",
+#       "American Indian alone",
+#       "Alaska Native alone",
+#       "American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races",
+#        "Asian alone",
+#        "Native Hawaiian and Other Pacific Islander alone",
+#        "Some Other Race alone",
+#        "Two or More Races")
+# ```
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# ```{r}
+# ca_income_race <- 
+#   1:9 %>% 
+#   map_dfr(function(x){
+#     race <- cleaned %>%
+#   mutate(
+#     RAC1P = as.numeric(RAC1P)
+#   ) %>% 
+#   filter(
+#     (RAC1P %in% census_race_categories[x])) %>% 
+#   mutate(
+#     PWGTP = as.numeric(PWGTP),
+#     HINCP = as.numeric(HINCP),
+#     Same_sex_household = ifelse(
+#         (CPLT == 2)|(CPLT == 4), 
+#       "Same sex couple",
+#       "Opposite sex couple"
+#     ),
+#     income =  ifelse(
+#       (HINCP <= 10000),
+#        "$10,000 or less",
+#       HINCP
+#     ),
+#     income = ifelse(
+#       (HINCP > 10000 & HINCP <= 20000),
+#        "$10,001 to $20000",
+#       income
+#     ),
+#     income = ifelse(
+#       (HINCP > 20000 & HINCP <= 30000),
+#        "$20,001 to $30,000",
+#       income
+#     ),
+#     income = ifelse(
+#       (HINCP > 30000 & HINCP <= 40000),
+#        "$30,001 to $40,000",
+#       income
+#     ),
+#     income = ifelse(
+#       (HINCP > 40000 & HINCP <= 50000),
+#        "$40,001 to $50,000",
+#       income
+#     ),
+#     income = ifelse(
+#       (HINCP > 50000 & HINCP <= 75000),
+#        "$50,001 to $75,000",
+#       income
+#     ),
+#     income = ifelse(
+#       (HINCP > 75000 & HINCP <= 100000),
+#        "$75,001 to $100,000",
+#       income
+#     ),
+#     income = ifelse(
+#       (HINCP > 100000 & HINCP <= 150000),
+#        "$100,001 to $150,000",
+#       income
+#     ),
+#     income = ifelse(
+#       (HINCP > 150000 & HINCP <= 200000),
+#        "$150,001 to $200,000",
+#       income
+#     ),
+#     income = ifelse(
+#       (HINCP > 200000),
+#        "$200,001 or more",
+#       income
+#     )) %>% 
+#   group_by(income, Same_sex_household) %>% 
+#   summarize(estimate = sum(PWGTP)) %>% 
+#   ggplot() +
+#   geom_bar(
+#     aes(
+#       x = income %>% factor(mixedsort(order)),
+#       y = estimate,
+#       fill = Same_sex_household
+#     ),
+#     stat = "identity",
+#     position = "stack"
+#   ) +
+#   labs(
+#     x = "Household income",
+#     y = "Number of households",
+#     title = "Bay Area household income by couple type",
+#     fill = "Couple Type"
+#   ) +
+#   coord_flip() +
+#   theme(
+#     legend.position = "bottom",
+#     legend.direction = "vertical"
+#   )  +
+#   guides(
+#     fill = guide_legend(
+#       reverse = T
+#     )
+#   )
+#   })
+# 
+# ```          
+#           
+#           
+#           
+#           
+#     getCensus(
+#       name = "acs/acs1/pums",
+#       vintage = 2019,
+#       region = "public use microdata area:*", 
+#       regionin = "state:06",
+#       vars = c(
+#         "SERIALNO", #Unique ID for each household
+#         "SPORDER", #Person number
+#         "PWGTP", #Total number of people
+#         "WGTP", #Housing Weight
+#         "HINCP", #Household Income
+#         "CPLT", #Couple Type
+#         "FINCP", #Family Income
+#         "PINCP", #Total Persons Income
+#         "RAC1P" #Recorded Detailed Race Code
+#       )
+#     ) %>%
+#       select(!c(GEO_ID,state,NAME) & !ends_with(c("EA","MA","M"))) %>%
+#       pivot_longer(
+#         ends_with("E"),
+#         names_to = "name",
+#         values_to = "estimate"
+#       ) %>%
+#       left_join(
+#         ca_pums %>% 
+#           select(name, label)
+#       ) %>% 
+#       select(-name) %>% 
+#       separate(
+#         label,
+#         into = c(NA,NA,"income"),
+#         sep = "!!"
+#       ) %>% 
+#       filter(!is.na(income)) %>% 
+#       mutate(race = census_race_categories[x])
+#   })
+# ```
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+# 
+#       (HINCP < 10000),
+#       "Less than 10,000",
+#       (HINCP > 10000),
+#       "More than 10,000",
+#       0
+#     ))
+#     
+#    
+#     
+#     
+#     # IR = ifelse(
+#     #   SERIALNO == SERIALNO|RAC1P!=RAC1P,
+#     #   1,
+#     #   0
+#     # )
+#     # )
+#     # 
+#     # 
+# 
+# # IRC_compare <-   #Attempting to pull out Interracial couples into new data set so we can compare races
+# #   ca_pums_IRC %>% 
+# #   mutate(
+# #     PWGTP = as.numeric(PWGTP),
+# #     SERIALNO = as.numeric(SERIALNO)) %>% 
+# #   if(SERIALNO == SERIALNO) {
+# #     mutate(
+# #     PWGTP = as.numeric(PWGTP),
+# #     Same_sex_household = ifelse(
+# #         (CPLT == 2)|(CPLT == 4), 
+# # 
+# #       1,
+# #       0
+# #     )) 
+# #   }
+# ##Can't figure out how to separate interracial couples--Trying to do if statement
+# #if {same serialno but different races put them in this data set or create new column}
+# ```
+#  
+# ```{r}
+# ca_pums_IRC %>% 
+#   group_by(HINCP, Same_sex_household) %>% 
+#   summarize(estimate = sum(PWGTP)) %>% 
+#   ggplot() +
+#   geom_bar(
+#     aes(
+#       x = HINCP,
+#       y = estimate,
+#       fill = Same_sex_household
+#     ),
+#     stat = "identity",
+#     position = "stack"
+#   ) +
+#   labs(
+#     x = "Household income",
+#     y = "Number of households",
+#     title = "Bay Area household income by couple type",
+#     fill = "Couple Type"
+#   )
+# ``` 
+#  
+#  
+#  
+#  
+#     
+# ```{r}
+# census_race_categories <- data.frame(
+#   code = c(1,2,3,4,5,6,7,8,9),
+#   category =
+#     c(
+#       "White alone",
+#       "Black or African American alone",
+#       "American Indian alone",
+#       "Alaska Native alone",
+#       "American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races",
+#        "Asian alone",
+#        "Native Hawaiian and Other Pacific Islander alone",
+#        "Some Other Race alone",
+#        "Two or More Races"
+#     ))
+# ```
+#   
+# ```{r}
+# census_race_categories <-
+#   c(
+#       "White alone",
+#       "Black or African American alone",
+#       "American Indian alone",
+#       "Alaska Native alone",
+#       "American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races",
+#        "Asian alone",
+#        "Native Hawaiian and Other Pacific Islander alone",
+#        "Some Other Race alone",
+#        "Two or More Races")
+# ```
+# 
+# ```{r}
+# ca_income_race <- 
+#   1:9 %>% 
+#   map_dfr(function(x){
+#     getCensus(
+#       name = "acs/acs1/pums",
+#       vintage = 2019,
+#       region = "public use microdata area:*", 
+#       regionin = "state:06",
+#       vars = c(
+#         "SERIALNO", #Unique ID for each household
+#         "SPORDER", #Person number
+#         "PWGTP", #Total number of people
+#         "WGTP", #Housing Weight
+#         "HINCP", #Household Income
+#         "CPLT", #Couple Type
+#         "FINCP", #Family Income
+#         "PINCP", #Total Persons Income
+#         "RAC1P" #Recorded Detailed Race Code
+#       )
+#     ) %>%
+#       select(!c(GEO_ID,state,NAME) & !ends_with(c("EA","MA","M"))) %>%
+#       pivot_longer(
+#         ends_with("E"),
+#         names_to = "name",
+#         values_to = "estimate"
+#       ) %>%
+#       left_join(
+#         ca_pums %>% 
+#           select(name, label)
+#       ) %>% 
+#       select(-name) %>% 
+#       separate(
+#         label,
+#         into = c(NA,NA,"income"),
+#         sep = "!!"
+#       ) %>% 
+#       filter(!is.na(income)) %>% 
+#       mutate(race = census_race_categories[x])
+#   })
+# ```
+#  
+# ```{r}
+# ca_cup <-
+#   getCensus(
+#       name = "acs/acs1/pums",
+#       vintage = 2019,
+#       region = "public use microdata area:*", 
+#       regionin = "state:06",
+#       vars = c(
+#         "SERIALNO", #Unique ID for each household
+#         "SPORDER", #Person number
+#         "PWGTP", #Total number of people
+#         "WGTP", #Housing Weight
+#         "HINCP", #Household Income
+#         "CPLT", #Couple Type
+#         "FINCP", #Family Income
+#         "PINCP", #Total Persons Income
+#         "RAC1P") #Recorded Detailed Race Code
+#   ) %>%
+#   left_join(
+#     ca_pums_IRC %>% 
+#       select(SERIALNO, public_use_microdata_area)
+#   ) 
+# 
+# ```
 # %>% 
-  # group_by(PUMA) %>% 
-  # summarize(
-  #   PERSON1 =
-  #     sum(Person1, na.rm =T)
-  # ) 
-```
-```
-
-```{r}
-bay_pums_couple <-
-  cleaned %>%
-  mutate(
-    WGTP = as.numeric(WGTP),
-    SPORDER = as.numeric(SPORDER),
-    partner1 = ifelse(
-      (SPORDER == 1),
-      WGTP,
-      0
-    ),
-    partner2 = ifelse(
-      (SPORDER == 2),
-      WGTP,
-      0
-    ) %>% 
-  group_by(PUMA) %>%
-  summarize(
-    partner1 =
-      sum(partner1, na.rm =T),
-    partner2 =
-      sum(partner2, na.rm =T))
-  )
-```
-
-
-
-    
-    ,
-    Same_sex_household = ifelse(
-      (HINCP < 100000) &
-        (CPLT == 2)|(CPLT == 4), 
-        
-      WGTP,
-      0
-    ),
-    Opposite_sex_household = ifelse(
-      (HINCP < 100000) &
-        (CPLT == 1)|(CPLT == 3),
-      WGTP,
-      0
-    ),
-    White = ifelse(
-      (SERIALNO == 1) &
-      (RAC1P == 1),
-      WGTP,
-      0
-    )
-    
-    
-    ) %>% 
-  group_by(PUMA) %>%
-  summarize(
-    sum_same_sex_household =
-      sum(Same_sex_household, na.rm =T),
-    sum_opposite_sex_household =
-      sum(Opposite_sex_household, na.rm =T),
-    partner1 =
-      sum(partner1, na.rm =T),
-    partner2 =
-      sum(partner2, na.rm =T)%>% 
-  left_join(
-    bay_pumas %>% 
-      select(PUMACE10),
-    by = c("PUMA" = "PUMACE10")
-  ) %>% 
-  st_as_sf()
-  ) 
-```
-
-```{r}
-bay_pums_couple <-
-  cleaned %>%
-  mutate(
-    WGTP = as.numeric(WGTP),
-    partner1 = ifelse(
-      (SPORDER == 1),
-      WGTP,
-      0
-    ),
-    partner2 = ifelse(
-      (SPORDER == 2),
-      WGTP,
-      0
-    ),
-    Same_sex_household = ifelse(
-      (HINCP < 100000) &
-        (CPLT == 2)|(CPLT == 4), 
-        
-      WGTP,
-      0
-    ),
-    Opposite_sex_household = ifelse(
-      (HINCP < 100000) &
-        (CPLT == 1)|(CPLT == 3),
-      WGTP,
-      0
-    ),
-    White = ifelse(
-      (SERIALNO == 1) &
-      (RAC1P == 1),
-      WGTP,
-      0
-    )
-    
-
-
-
-
-```
-
-
-```{r}
-acs_vars_2019_5yr <-
-  listCensusMetadata(
-    name = "2019/acs/acs5",
-    type = "variables"
-  )
-```
-
-
-```{r}
-veteran <-
-    getCensus(
-      name = "acs/acs5",
-      vintage = 2019,
-      region = "county:055",
-      regionin = "state:06",
-      vars = "group(S2101)" 
-    ) %>%
-      select(!c(GEO_ID,state,NAME,county) & !ends_with(c("EA","MA","M"))) %>%
-      pivot_longer(
-        ends_with("E"),
-        names_to = "name",
-        values_to = "estimate"
-      ) %>%
-      left_join(
-        acs_vars_2019_5yr %>% 
-          select(name, label)
-      )
-```
-
-##How would we filter out just first two people to determine their races? Is sample size too small?
-
-
-##Veterans, Jobs, Race< which war, income
-
-
-
-
-
-
-
+#   select(-name) %>% 
+#   separate(
+#     label,
+#     into = c(NA,NA,"income"),
+#     sep = "!!"
+#   ) %>% 
+#   filter(!is.na(income))
+# ```  
+#   
+#   ,
+#     White_Low_Income = ifelse(
+#       (RAC1P == 1) & (HINCP > 100000),
+#       1,
+#       0
+#     ),
+#     Not_White_Low_Income = ifelse(
+#       (RAC1P != 1) & (HINCP > 100000),
+#       1,
+#       0)) 
+# ```
+# 
+# ```{r}
+# bay_pums_couple <-
+#   cleaned %>% 
+#   Same_sex_household = ifelse(
+#         (CPLT == 2)|(CPLT == 4), 
+#         WGTP,
+#         0)
+# # %>% 
+#   # group_by(PUMA) %>% 
+#   # summarize(
+#   #   PERSON1 =
+#   #     sum(Person1, na.rm =T)
+#   # ) 
+# ```
+# ```
+# 
+# ```{r}
+# bay_pums_couple <-
+#   cleaned %>%
+#   mutate(
+#     WGTP = as.numeric(WGTP),
+#     SPORDER = as.numeric(SPORDER),
+#     partner1 = ifelse(
+#       (SPORDER == 1),
+#       WGTP,
+#       0
+#     ),
+#     partner2 = ifelse(
+#       (SPORDER == 2),
+#       WGTP,
+#       0
+#     ) %>% 
+#   group_by(PUMA) %>%
+#   summarize(
+#     partner1 =
+#       sum(partner1, na.rm =T),
+#     partner2 =
+#       sum(partner2, na.rm =T))
+#   )
+# ```
+# 
+# 
+# 
+#     
+#     ,
+#     Same_sex_household = ifelse(
+#       (HINCP < 100000) &
+#         (CPLT == 2)|(CPLT == 4), 
+#         
+#       WGTP,
+#       0
+#     ),
+#     Opposite_sex_household = ifelse(
+#       (HINCP < 100000) &
+#         (CPLT == 1)|(CPLT == 3),
+#       WGTP,
+#       0
+#     ),
+#     White = ifelse(
+#       (SERIALNO == 1) &
+#       (RAC1P == 1),
+#       WGTP,
+#       0
+#     )
+#     
+#     
+#     ) %>% 
+#   group_by(PUMA) %>%
+#   summarize(
+#     sum_same_sex_household =
+#       sum(Same_sex_household, na.rm =T),
+#     sum_opposite_sex_household =
+#       sum(Opposite_sex_household, na.rm =T),
+#     partner1 =
+#       sum(partner1, na.rm =T),
+#     partner2 =
+#       sum(partner2, na.rm =T)%>% 
+#   left_join(
+#     bay_pumas %>% 
+#       select(PUMACE10),
+#     by = c("PUMA" = "PUMACE10")
+#   ) %>% 
+#   st_as_sf()
+#   ) 
+# ```
+# 
+# ```{r}
+# bay_pums_couple <-
+#   cleaned %>%
+#   mutate(
+#     WGTP = as.numeric(WGTP),
+#     partner1 = ifelse(
+#       (SPORDER == 1),
+#       WGTP,
+#       0
+#     ),
+#     partner2 = ifelse(
+#       (SPORDER == 2),
+#       WGTP,
+#       0
+#     ),
+#     Same_sex_household = ifelse(
+#       (HINCP < 100000) &
+#         (CPLT == 2)|(CPLT == 4), 
+#         
+#       WGTP,
+#       0
+#     ),
+#     Opposite_sex_household = ifelse(
+#       (HINCP < 100000) &
+#         (CPLT == 1)|(CPLT == 3),
+#       WGTP,
+#       0
+#     ),
+#     White = ifelse(
+#       (SERIALNO == 1) &
+#       (RAC1P == 1),
+#       WGTP,
+#       0
+#     )
+#     
+# 
+# 
+# 
+# 
+# ```
+# 
+# 
+# ```{r}
+# acs_vars_2019_5yr <-
+#   listCensusMetadata(
+#     name = "2019/acs/acs5",
+#     type = "variables"
+#   )
+# ```
+# 
+# 
+# ```{r}
+# veteran <-
+#     getCensus(
+#       name = "acs/acs5",
+#       vintage = 2019,
+#       region = "county:055",
+#       regionin = "state:06",
+#       vars = "group(S2101)" 
+#     ) %>%
+#       select(!c(GEO_ID,state,NAME,county) & !ends_with(c("EA","MA","M"))) %>%
+#       pivot_longer(
+#         ends_with("E"),
+#         names_to = "name",
+#         values_to = "estimate"
+#       ) %>%
+#       left_join(
+#         acs_vars_2019_5yr %>% 
+#           select(name, label)
+#       )
+# ```
+# 
+# ##How would we filter out just first two people to determine their races? Is sample size too small?
+# 
+# 
+# ##Veterans, Jobs, Race< which war, income
+# 
+# 
+# 
+# 
+# 
+# 
+# 
 
 
 
