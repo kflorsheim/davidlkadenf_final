@@ -1,6 +1,6 @@
 ---
 title: "KadenFlorsheimDavidLüdeke_Final"
-author: "Kaden Florsheim"
+author: "Kaden Florsheim & David Lüdeke"
 date: "11/14/2021"
 output: html_document
 ---
@@ -35,7 +35,8 @@ pums_2019_1yr <- getCensus(
     "CPLT", #Couple Type
     "FINCP", #Family Income
     "PINCP", #Total Persons Income
-    "RAC1P" #Recorded Detailed Race Code
+    "RAC1P", #Recorded Detailed Race Code
+    "SEX" #sex
   )
 )
 ```
@@ -71,16 +72,17 @@ cleaned <- ca_pums %>%
   ) %>% 
   filter(
     (SPORDER %in% 1:2), #Only using head of household data so that household income is not double counted thus skewing results.
-    (CPLT %in% 1:4)) %>% #filtering out N/A
-  select(-public_use_microdata_area)
+    (CPLT %in% 1:4)) #filtering out N/A
+
 ```
 
 ```{r}
 compare <-
   cleaned %>% 
+  select(c(-public_use_microdata_area,-state, -WGTP, -FINCP,-PINCP)) %>% 
   pivot_wider(
-    names_from = "SPORDER",
-    values_from = c("RAC1P"))
+    names_from = SERIALNO
+  )
 ```
 
 
@@ -90,7 +92,7 @@ ca_pums_IRC <-
   cleaned %>%
   mutate(
     PWGTP = as.numeric(PWGTP),
-    HINCP = as.numeric(HINCP),
+    PINCP = as.numeric(PINCP),
     RAC1P = as.numeric(RAC1P),
     Same_sex_household = ifelse(
         (CPLT == 2)|(CPLT == 4), #Same-sex married couple|same-sex unmarried couple
@@ -98,42 +100,42 @@ ca_pums_IRC <-
       "Opposite sex couple"
     ),
     income =  ifelse(
-      (HINCP <= 20000),
+      (PINCP <= 20000),
        "$20,000 or less",
-      HINCP
+      PINCP
     ),
     income = ifelse(
-      (HINCP > 20001 & HINCP <= 50000),
+      (PINCP > 20001 & PINCP <= 50000),
        "$20,001 to $50,000",
       income
     ),
     income = ifelse(
-      (HINCP > 50001 & HINCP <= 80000),
+      (PINCP > 50001 & PINCP <= 80000),
        "$50,001 to $80,000",
       income
     ),
     income = ifelse(
-      (HINCP > 80001 & HINCP <= 100000),
+      (PINCP > 80001 & PINCP <= 100000),
        "$80,001 to $100,000",
       income
     ),
     income = ifelse(
-      (HINCP > 100001 & HINCP <= 150000),
+      (PINCP > 100001 & PINCP <= 150000),
        "$100,001 to $150,000",
       income
     ),
     income = ifelse(
-      (HINCP > 150001 & HINCP <= 200000),
+      (PINCP > 150001 & PINCP <= 200000),
        "$150,001 to $200,000",
       income
     ),
     income = ifelse(
-      (HINCP > 200001 & HINCP <= 250000),
+      (PINCP > 200001 & PINCP <= 250000),
        "$200,001 to $250,000",
       income
     ),
     income = ifelse(
-      (HINCP > 250001),
+      (PINCP > 250001),
        "$250,001 or more",
       income
     ))
@@ -203,49 +205,49 @@ ca_pums_IRC <-
   cleaned %>%
   mutate(
     PWGTP = as.numeric(PWGTP),
-    HINCP = as.numeric(HINCP),
+    PINCP = as.numeric(PINCP),
     Same_sex_household = ifelse(
         (CPLT == 2)|(CPLT == 4), 
       "Same sex couple",
       "Opposite sex couple"
     ),
     income =  ifelse(
-      (HINCP <= 20000),
+      (PINCP <= 20000),
        "$20,000 or less",
-      HINCP
+      PINCP
     ),
     income = ifelse(
-      (HINCP > 20001 & HINCP <= 50000),
+      (PINCP > 20001 & PINCP <= 50000),
        "$20,001 to $50,000",
       income
     ),
     income = ifelse(
-      (HINCP > 50001 & HINCP <= 80000),
+      (PINCP > 50001 & PINCP <= 80000),
        "$50,001 to $80,000",
       income
     ),
     income = ifelse(
-      (HINCP > 80001 & HINCP <= 100000),
+      (PINCP > 80001 & PINCP <= 100000),
        "$80,001 to $100,000",
       income
     ),
     income = ifelse(
-      (HINCP > 100001 & HINCP <= 150000),
+      (PINCP > 100001 & PINCP <= 150000),
        "$100,001 to $150,000",
       income
     ),
     income = ifelse(
-      (HINCP > 150001 & HINCP <= 200000),
+      (PINCP > 150001 & PINCP <= 200000),
        "$150,001 to $200,000",
       income
     ),
     income = ifelse(
-      (HINCP > 200001 & HINCP <= 250000),
+      (PINCP > 200001 & PINCP <= 250000),
        "$200,001 to $250,000",
       income
     ),
     income = ifelse(
-      (HINCP > 250001),
+      (PINCP > 250001),
        "$250,001 or more",
       income
     ),
@@ -300,49 +302,49 @@ ca_pums_IRC <-
   cleaned %>%
   mutate(
     PWGTP = as.numeric(PWGTP),
-    HINCP = as.numeric(HINCP),
+    PINCP = as.numeric(PINCP),
     Same_sex_household = ifelse(
         (CPLT == 2)|(CPLT == 4), 
       "Same sex couple",
       "Opposite sex couple"
     ),
     income =  ifelse(
-      (HINCP <= 20000),
+      (PINCP <= 20000),
        "$20,000 or less",
-      HINCP
+      PINCP
     ),
     income = ifelse(
-      (HINCP > 20001 & HINCP <= 50000),
+      (PINCP > 20001 & PINCP <= 50000),
        "$20,001 to $50,000",
       income
     ),
     income = ifelse(
-      (HINCP > 50001 & HINCP <= 80000),
+      (PINCP > 50001 & PINCP <= 80000),
        "$50,001 to $80,000",
       income
     ),
     income = ifelse(
-      (HINCP > 80001 & HINCP <= 100000),
+      (PINCP > 80001 & PINCP <= 100000),
        "$80,001 to $100,000",
       income
     ),
     income = ifelse(
-      (HINCP > 100001 & HINCP <= 150000),
+      (PINCP > 100001 & PINCP <= 150000),
        "$100,001 to $150,000",
       income
     ),
     income = ifelse(
-      (HINCP > 150001 & HINCP <= 200000),
+      (PINCP > 150001 & PINCP <= 200000),
        "$150,001 to $200,000",
       income
     ),
     income = ifelse(
-      (HINCP > 200001 & HINCP <= 250000),
+      (PINCP > 200001 & PINCP <= 250000),
        "$200,001 to $250,000",
       income
     ),
     income = ifelse(
-      (HINCP > 250001),
+      (PINCP > 250001),
        "$250,001 or more",
       income
     ),
@@ -397,60 +399,50 @@ ca_pums_IRC <-
   cleaned %>%
   mutate(
     PWGTP = as.numeric(PWGTP),
-    HINCP = as.numeric(HINCP),
+    PINCP = as.numeric(PINCP),
     Same_sex_household = ifelse(
         (CPLT == 2)|(CPLT == 4), 
       "Same sex couple",
       "Opposite sex couple"
     ),
     income =  ifelse(
-      (HINCP <= 10000),
-       "$10,000 or less",
-      HINCP
+      (PINCP <= 20000),
+       "$20,000 or less",
+      PINCP
     ),
     income = ifelse(
-      (HINCP > 10000 & HINCP <= 20000),
-       "$10,001 to $20000",
+      (PINCP > 20001 & PINCP <= 50000),
+       "$20,001 to $50,000",
       income
     ),
     income = ifelse(
-      (HINCP > 20000 & HINCP <= 30000),
-       "$20,001 to $30,000",
+      (PINCP > 50001 & PINCP <= 80000),
+       "$50,001 to $80,000",
       income
     ),
     income = ifelse(
-      (HINCP > 30000 & HINCP <= 40000),
-       "$30,001 to $40,000",
+      (PINCP > 80001 & PINCP <= 100000),
+       "$80,001 to $100,000",
       income
     ),
     income = ifelse(
-      (HINCP > 40000 & HINCP <= 50000),
-       "$40,001 to $50,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 50000 & HINCP <= 75000),
-       "$50,001 to $75,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 75000 & HINCP <= 100000),
-       "$75,001 to $100,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 100000 & HINCP <= 150000),
+      (PINCP > 100001 & PINCP <= 150000),
        "$100,001 to $150,000",
       income
     ),
     income = ifelse(
-      (HINCP > 150000 & HINCP <= 200000),
+      (PINCP > 150001 & PINCP <= 200000),
        "$150,001 to $200,000",
       income
     ),
     income = ifelse(
-      (HINCP > 200000),
-       "$200,001 or more",
+      (PINCP > 200001 & PINCP <= 250000),
+       "$200,001 to $250,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 250001),
+       "$250,001 or more",
       income
     ),
     RAC1P = as.numeric(RAC1P)
@@ -459,66 +451,95 @@ ca_pums_IRC <-
     (RAC1P %in% 6)) #Asian American alone
 ```
 
+## Asian American Alone
+```{r}
+ca_asian_total <-
+  ca_pums_IRC %>% 
+  group_by(Same_sex_household) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  mutate(income = "Total")
+
+ca_pums_IRC %>% 
+  group_by(income, Same_sex_household) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  rbind(ca_asian_total) %>%  
+  ggplot() +
+  geom_bar(
+    aes(
+      x = income %>% factor(levels = rev(c("Total", mixedsort(order)))),
+      y = estimate,
+      fill = Same_sex_household %>% factor(levels = rev(unique(ca_pums_IRC$Same_sex_household)))
+    ),
+    stat = "identity",
+    position = "fill"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "California household income by couple type",
+    fill = "Couple Type"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  )  +
+  guides(
+    fill = guide_legend(
+      reverse = T
+    )
+  )
+```
 
 ```{r}
 ca_pums_IRC <-
   cleaned %>%
   mutate(
     PWGTP = as.numeric(PWGTP),
-    HINCP = as.numeric(HINCP),
+    PINCP = as.numeric(PINCP),
     Same_sex_household = ifelse(
         (CPLT == 2)|(CPLT == 4), 
       "Same sex couple",
       "Opposite sex couple"
     ),
     income =  ifelse(
-      (HINCP <= 10000),
-       "$10,000 or less",
-      HINCP
+      (PINCP <= 20000),
+       "$20,000 or less",
+      PINCP
     ),
     income = ifelse(
-      (HINCP > 10000 & HINCP <= 20000),
-       "$10,001 to $20000",
+      (PINCP > 20001 & PINCP <= 50000),
+       "$20,001 to $50,000",
       income
     ),
     income = ifelse(
-      (HINCP > 20000 & HINCP <= 30000),
-       "$20,001 to $30,000",
+      (PINCP > 50001 & PINCP <= 80000),
+       "$50,001 to $80,000",
       income
     ),
     income = ifelse(
-      (HINCP > 30000 & HINCP <= 40000),
-       "$30,001 to $40,000",
+      (PINCP > 80001 & PINCP <= 100000),
+       "$80,001 to $100,000",
       income
     ),
     income = ifelse(
-      (HINCP > 40000 & HINCP <= 50000),
-       "$40,001 to $50,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 50000 & HINCP <= 75000),
-       "$50,001 to $75,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 75000 & HINCP <= 100000),
-       "$75,001 to $100,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 100000 & HINCP <= 150000),
+      (PINCP > 100001 & PINCP <= 150000),
        "$100,001 to $150,000",
       income
     ),
     income = ifelse(
-      (HINCP > 150000 & HINCP <= 200000),
+      (PINCP > 150001 & PINCP <= 200000),
        "$150,001 to $200,000",
       income
     ),
     income = ifelse(
-      (HINCP > 200000),
-       "$200,001 or more",
+      (PINCP > 200001 & PINCP <= 250000),
+       "$200,001 to $250,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 250001),
+       "$250,001 or more",
       income
     ),
     RAC1P = as.numeric(RAC1P)
@@ -568,109 +589,55 @@ ca_pums_IRC %>%
   )
 ```
 
-
-
-
-
-## Asian American Alone
-```{r}
-ca_asian_total <-
-  ca_pums_IRC %>% 
-  group_by(Same_sex_household) %>% 
-  summarize(estimate = sum(PWGTP)) %>% 
-  mutate(income = "Total")
-
-ca_pums_IRC %>% 
-  group_by(income, Same_sex_household) %>% 
-  summarize(estimate = sum(PWGTP)) %>% 
-  rbind(ca_asian_total) %>%  
-  ggplot() +
-  geom_bar(
-    aes(
-      x = income %>% factor(levels = rev(c("Total", mixedsort(order)))),
-      y = estimate,
-      fill = Same_sex_household %>% factor(levels = rev(unique(ca_pums_IRC$Same_sex_household)))
-    ),
-    stat = "identity",
-    position = "fill"
-  ) +
-  labs(
-    x = "Household income",
-    y = "Number of households",
-    title = "California household income by couple type",
-    fill = "Couple Type"
-  ) +
-  coord_flip() +
-  theme(
-    legend.position = "bottom",
-    legend.direction = "vertical"
-  )  +
-  guides(
-    fill = guide_legend(
-      reverse = T
-    )
-  )
-```
-
 ```{r}
 ca_pums_IRC <-
   cleaned %>%
   mutate(
     PWGTP = as.numeric(PWGTP),
-    HINCP = as.numeric(HINCP),
+    PINCP = as.numeric(PINCP),
     Same_sex_household = ifelse(
         (CPLT == 2)|(CPLT == 4), 
       "Same sex couple",
       "Opposite sex couple"
     ),
     income =  ifelse(
-      (HINCP <= 10000),
-       "$10,000 or less",
-      HINCP
+      (PINCP <= 20000),
+       "$20,000 or less",
+      PINCP
     ),
     income = ifelse(
-      (HINCP > 10000 & HINCP <= 20000),
-       "$10,001 to $20000",
+      (PINCP > 20001 & PINCP <= 50000),
+       "$20,001 to $50,000",
       income
     ),
     income = ifelse(
-      (HINCP > 20000 & HINCP <= 30000),
-       "$20,001 to $30,000",
+      (PINCP > 50001 & PINCP <= 80000),
+       "$50,001 to $80,000",
       income
     ),
     income = ifelse(
-      (HINCP > 30000 & HINCP <= 40000),
-       "$30,001 to $40,000",
+      (PINCP > 80001 & PINCP <= 100000),
+       "$80,001 to $100,000",
       income
     ),
     income = ifelse(
-      (HINCP > 40000 & HINCP <= 50000),
-       "$40,001 to $50,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 50000 & HINCP <= 75000),
-       "$50,001 to $75,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 75000 & HINCP <= 100000),
-       "$75,001 to $100,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 100000 & HINCP <= 150000),
+      (PINCP > 100001 & PINCP <= 150000),
        "$100,001 to $150,000",
       income
     ),
     income = ifelse(
-      (HINCP > 150000 & HINCP <= 200000),
+      (PINCP > 150001 & PINCP <= 200000),
        "$150,001 to $200,000",
       income
     ),
     income = ifelse(
-      (HINCP > 200000),
-       "$200,001 or more",
+      (PINCP > 200001 & PINCP <= 250000),
+       "$200,001 to $250,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 250001),
+       "$250,001 or more",
       income
     ),
     RAC1P = as.numeric(RAC1P)
@@ -731,55 +698,45 @@ ca_pums_IRC <-
     (RAC1P %in% c(1,2,3,6,9))) %>%  #Filtering out RAC1P variables that don't have enough data (Alaska Native alone,American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races, Native Hawaiian and Other Pacific Islander alone, Some Other Race alone)
   mutate(
     PWGTP = as.numeric(PWGTP),
-    HINCP = as.numeric(HINCP),
+    PINCP = as.numeric(PINCP),
     income =  ifelse(
-      (HINCP <= 10000),
-       "$10,000 or less",
+      (PINCP <= 20000),
+       "$20,000 or less",
       HINCP
     ),
     income = ifelse(
-      (HINCP > 10000 & HINCP <= 20000),
-       "$10,001 to $20000",
+      (PINCP > 20001 & PINCP <= 50000),
+       "$20,001 to $50,000",
       income
     ),
     income = ifelse(
-      (HINCP > 20000 & HINCP <= 30000),
-       "$20,001 to $30,000",
+      (PINCP > 50001 & PINCP <= 80000),
+       "$50,001 to $80,000",
       income
     ),
     income = ifelse(
-      (HINCP > 30000 & HINCP <= 40000),
-       "$30,001 to $40,000",
+      (PINCP > 80001 & PINCP <= 100000),
+       "$80,001 to $100,000",
       income
     ),
     income = ifelse(
-      (HINCP > 40000 & HINCP <= 50000),
-       "$40,001 to $50,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 50000 & HINCP <= 75000),
-       "$50,001 to $75,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 75000 & HINCP <= 100000),
-       "$75,001 to $100,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 100000 & HINCP <= 150000),
+      (PINCP > 100001 & PINCP <= 150000),
        "$100,001 to $150,000",
       income
     ),
     income = ifelse(
-      (HINCP > 150000 & HINCP <= 200000),
+      (PINCP > 150001 & PINCP <= 200000),
        "$150,001 to $200,000",
       income
     ),
     income = ifelse(
-      (HINCP > 200000),
-       "$200,001 or more",
+      (PINCP > 200001 & PINCP <= 250000),
+       "$200,001 to $250,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 250001),
+       "$250,001 or more",
       income
     ),
     race = ifelse(
@@ -809,6 +766,7 @@ ca_pums_IRC <-
     )) 
 ```
 
+## Individual in same-sex relationship personal income by race
 ```{r}
 ca_race_total <-
   ca_pums_IRC %>% 
@@ -833,7 +791,7 @@ ca_pums_IRC %>%
   labs(
     x = "Household income",
     y = "Number of households",
-    title = "California same-sex household income by Race",
+    title = "California personal income by race: Individuals in same-sex relationships",
     fill = "Race"
   ) +
   coord_flip() +
@@ -856,55 +814,45 @@ ca_pums_IRC <-
     (RAC1P %in% c(1,2,3,6,9))) %>%  #Filtering out RAC1P variables that don't have enough data (Alaska Native alone,American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races, Native Hawaiian and Other Pacific Islander alone, Some Other Race alone)
   mutate(
     PWGTP = as.numeric(PWGTP),
-    HINCP = as.numeric(HINCP),
+    PINCP = as.numeric(PINCP),
     income =  ifelse(
-      (HINCP <= 10000),
-       "$10,000 or less",
-      HINCP
+      (PINCP <= 20000),
+       "$20,000 or less",
+      PINCP
     ),
     income = ifelse(
-      (HINCP > 10000 & HINCP <= 20000),
-       "$10,001 to $20000",
+      (PINCP > 20001 & PINCP <= 50000),
+       "$20,001 to $50,000",
       income
     ),
     income = ifelse(
-      (HINCP > 20000 & HINCP <= 30000),
-       "$20,001 to $30,000",
+      (PINCP > 50001 & PINCP <= 80000),
+       "$50,001 to $80,000",
       income
     ),
     income = ifelse(
-      (HINCP > 30000 & HINCP <= 40000),
-       "$30,001 to $40,000",
+      (PINCP > 80001 & PINCP <= 100000),
+       "$80,001 to $100,000",
       income
     ),
     income = ifelse(
-      (HINCP > 40000 & HINCP <= 50000),
-       "$40,001 to $50,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 50000 & HINCP <= 75000),
-       "$50,001 to $75,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 75000 & HINCP <= 100000),
-       "$75,001 to $100,000",
-      income
-    ),
-    income = ifelse(
-      (HINCP > 100000 & HINCP <= 150000),
+      (PINCP > 100001 & PINCP <= 150000),
        "$100,001 to $150,000",
       income
     ),
     income = ifelse(
-      (HINCP > 150000 & HINCP <= 200000),
+      (PINCP > 150001 & PINCP <= 200000),
        "$150,001 to $200,000",
       income
     ),
     income = ifelse(
-      (HINCP > 200000),
-       "$200,001 or more",
+      (PINCP > 200001 & PINCP <= 250000),
+       "$200,001 to $250,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 250001),
+       "$250,001 or more",
       income
     ),
     race = ifelse(
@@ -931,9 +879,10 @@ ca_pums_IRC <-
       (RAC1P == 9),
       "Two or More Races",
       race
-    )) 
+    ))  
 ```
 
+## Individual in opposite-sex relationship personal income by race
 ```{r}
 ca_race_total <-
   ca_pums_IRC %>% 
@@ -958,7 +907,7 @@ ca_pums_IRC %>%
   labs(
     x = "Household income",
     y = "Number of households",
-    title = "California opposite-sex household income by race",
+    title = "California personal income by race: Individuals in opposite-sex relationships",
     fill = "Race"
   ) +
   coord_flip() +
@@ -972,6 +921,397 @@ ca_pums_IRC %>%
     )
   )
 ```
+
+## Same-Sex gender Equity Analysis 
+
+```{r}
+ca_pums_IRC <-
+  cleaned %>%
+  filter(
+    (CPLT %in% c(2, 4)) #Filtering out opposite-sex couples
+  ) %>% 
+  mutate(
+    PWGTP = as.numeric(PWGTP),
+    PINCP = as.numeric(PINCP),
+    income =  ifelse(
+      (PINCP <= 20000),
+       "$20,000 or less",
+      PINCP
+    ),
+    income = ifelse(
+      (PINCP > 20001 & PINCP <= 50000),
+       "$20,001 to $50,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 50001 & PINCP <= 80000),
+       "$50,001 to $80,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 80001 & PINCP <= 100000),
+       "$80,001 to $100,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 100001 & PINCP <= 150000),
+       "$100,001 to $150,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 150001 & PINCP <= 200000),
+       "$150,001 to $200,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 200001 & PINCP <= 250000),
+       "$200,001 to $250,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 250001),
+       "$250,001 or more",
+      income
+    ),
+    Sex = ifelse(
+      (SEX == 1),
+      "Male",
+      "Female"
+    ))  
+```
+
+
+```{r}
+ca_sex_total <-
+  ca_pums_IRC %>% 
+  group_by(Sex) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  mutate(income = "Total")
+
+ca_pums_IRC %>% 
+  group_by(income, Sex) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  rbind(ca_sex_total) %>%  
+  ggplot() +
+  geom_bar(
+    aes(
+      x = income %>% factor(levels = rev(c("Total", mixedsort(order)))),
+      y = estimate,
+      fill = Sex %>% factor(levels = rev(unique(ca_pums_IRC$Sex)))
+    ),
+    stat = "identity",
+    position = "fill"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "California personal income by sex: Individuals in same-sex relationships",
+    fill = "Race"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  )  +
+  guides(
+    fill = guide_legend(
+      reverse = T
+    )
+  )
+```
+
+```{r}
+ca_pums_IRC <-
+  cleaned %>%
+  filter(
+    (CPLT %in% c(1, 3)) #Filtering out same-sex couples
+  ) %>% 
+  mutate(
+    PWGTP = as.numeric(PWGTP),
+    PINCP = as.numeric(PINCP),
+    income =  ifelse(
+      (PINCP <= 20000),
+       "$20,000 or less",
+      PINCP
+    ),
+    income = ifelse(
+      (PINCP > 20001 & PINCP <= 50000),
+       "$20,001 to $50,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 50001 & PINCP <= 80000),
+       "$50,001 to $80,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 80001 & PINCP <= 100000),
+       "$80,001 to $100,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 100001 & PINCP <= 150000),
+       "$100,001 to $150,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 150001 & PINCP <= 200000),
+       "$150,001 to $200,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 200001 & PINCP <= 250000),
+       "$200,001 to $250,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 250001),
+       "$250,001 or more",
+      income
+    ),
+    Sex = ifelse(
+      (SEX == 1),
+      "Male",
+      "Female"
+    ))  
+```
+
+
+```{r}
+ca_sex_total <-
+  ca_pums_IRC %>% 
+  group_by(Sex) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  mutate(income = "Total")
+
+ca_pums_IRC %>% 
+  group_by(income, Sex) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  rbind(ca_sex_total) %>%  
+  ggplot() +
+  geom_bar(
+    aes(
+      x = income %>% factor(levels = rev(c("Total", mixedsort(order)))),
+      y = estimate,
+      fill = Sex %>% factor(levels = rev(unique(ca_pums_IRC$Sex)))
+    ),
+    stat = "identity",
+    position = "fill"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "California personal income by sex: Individuals in opposite-sex relationships",
+    fill = "Race"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  )  +
+  guides(
+    fill = guide_legend(
+      reverse = T
+    )
+  )
+```
+
+```{r}
+ca_pums_IRC <-
+  cleaned %>%
+  filter(
+    (SEX %in% 1) #Filtering out women
+  ) %>% 
+  mutate(
+    PWGTP = as.numeric(PWGTP),
+    PINCP = as.numeric(PINCP),
+    income =  ifelse(
+      (PINCP <= 20000),
+       "$20,000 or less",
+      PINCP
+    ),
+    income = ifelse(
+      (PINCP > 20001 & PINCP <= 50000),
+       "$20,001 to $50,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 50001 & PINCP <= 80000),
+       "$50,001 to $80,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 80001 & PINCP <= 100000),
+       "$80,001 to $100,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 100001 & PINCP <= 150000),
+       "$100,001 to $150,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 150001 & PINCP <= 200000),
+       "$150,001 to $200,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 200001 & PINCP <= 250000),
+       "$200,001 to $250,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 250001),
+       "$250,001 or more",
+      income
+    ),
+    Same_sex_household = ifelse(
+        (CPLT == 2)|(CPLT == 4), #Same-sex married couple|same-sex unmarried couple
+      "Same sex couple",
+      "Opposite sex couple"
+      )) 
+```
+
+
+```{r}
+ca_ct_total <-
+  ca_pums_IRC %>% 
+  group_by(Same_sex_household) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  mutate(income = "Total")
+
+ca_pums_IRC %>% 
+  group_by(income, Same_sex_household) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  rbind(ca_ct_total) %>%  
+  ggplot() +
+  geom_bar(
+    aes(
+      x = income %>% factor(levels = rev(c("Total", mixedsort(order)))),
+      y = estimate,
+      fill = Same_sex_household %>% factor(levels = rev(unique(ca_pums_IRC$Same_sex_household)))
+    ),
+    stat = "identity",
+    position = "fill"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "California personal income by couple type: Men",
+    fill = "Race"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  )  +
+  guides(
+    fill = guide_legend(
+      reverse = T
+    )
+  )
+```
+
+```{r}
+ca_pums_IRC <-
+  cleaned %>%
+  filter(
+    (SEX %in% 2) #Filtering out men
+  ) %>% 
+  mutate(
+    PWGTP = as.numeric(PWGTP),
+    PINCP = as.numeric(PINCP),
+    income =  ifelse(
+      (PINCP <= 20000),
+       "$20,000 or less",
+      PINCP
+    ),
+    income = ifelse(
+      (PINCP > 20001 & PINCP <= 50000),
+       "$20,001 to $50,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 50001 & PINCP <= 80000),
+       "$50,001 to $80,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 80001 & PINCP <= 100000),
+       "$80,001 to $100,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 100001 & PINCP <= 150000),
+       "$100,001 to $150,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 150001 & PINCP <= 200000),
+       "$150,001 to $200,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 200001 & PINCP <= 250000),
+       "$200,001 to $250,000",
+      income
+    ),
+    income = ifelse(
+      (PINCP > 250001),
+       "$250,001 or more",
+      income
+    ),
+    Same_sex_household = ifelse(
+        (CPLT == 2)|(CPLT == 4), #Same-sex married couple|same-sex unmarried couple
+      "Same sex couple",
+      "Opposite sex couple"
+      )) 
+```
+
+
+```{r}
+ca_ct_total <-
+  ca_pums_IRC %>% 
+  group_by(Same_sex_household) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  mutate(income = "Total")
+
+ca_pums_IRC %>% 
+  group_by(income, Same_sex_household) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
+  rbind(ca_ct_total) %>%  
+  ggplot() +
+  geom_bar(
+    aes(
+      x = income %>% factor(levels = rev(c("Total", mixedsort(order)))),
+      y = estimate,
+      fill = Same_sex_household %>% factor(levels = rev(unique(ca_pums_IRC$Same_sex_household)))
+    ),
+    stat = "identity",
+    position = "fill"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "California personal income by couple type: Women",
+    fill = "Race"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  )  +
+  guides(
+    fill = guide_legend(
+      reverse = T
+    )
+  )
+```
+
+
+
+
+
 
 
 
