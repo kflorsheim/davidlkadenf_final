@@ -72,14 +72,79 @@ cleaned <- us_pums %>%
     (CPLT %in% 1:4)) #filtering out N/A
 ```
 
-### US
+```{r}
+us_pums_pop <-
+  cleaned %>%
+  filter(
+    (RAC1P %in% c(1,2,3,6,9))) %>% 
+  mutate(
+    same_sex = ifelse(
+        (CPLT == 2)|(CPLT == 4),
+        1,
+        0
+  )) %>% 
+  group_by(PUMA) %>% 
+  summarize(
+    samesex = sum(same_sex, na.rm = T),
+    total_pop = sum(CPLT, na.rm = T)
+  ) %>% 
+  mutate(
+    percent = samesex/total_pop*100
+  ) %>% 
+    left_join(
+    us_pumas %>% 
+      select(PUMACE10),
+    by = c("PUMA" = "PUMACE10")
+  ) %>% 
+  st_as_sf()
+```
+
+### USA
+
+```{r}
+couple_pal <- colorNumeric(
+  palette = "Blues",
+  domain = 
+    c(0,5)
+)
+
+leaflet() %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
+  addPolygons(
+    data = us_pums_pop, 
+    fillColor = ~couple_pal (percent),
+    color = "white",
+    opacity = 0.5,
+    fillOpacity = 0.75,
+    weight = 1,
+    label = ~paste0(
+      round(percent*100)/100,
+      "% same-sex couples"
+    ),
+    highlightOptions = highlightOptions(
+      weight = 2,
+      opacity = 1
+    )
+  ) %>% 
+  addLegend(
+    data = us_pums_pop,
+    pal = couple_pal,
+    values = 0:5,
+    title = "% same-sex relationships"
+  )
+
+```
+#There were a few outlyers that were filtered out to maintain a more observable color gradient. Palm Springs was the largest and had 17.62% same-sex couples.
+
+
+### USA
 
 ```{r}
 us_pums_IRC <-
   cleaned %>%
   filter(
     (CPLT %in% c(2, 4)), #Filtering out opposite-sex couples
-    (RAC1P %in% c(1,2,3,6,8,9))) %>%  #Filtering out RAC1P variables that don't have enough data (Alaska Native alone,American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races, Native Hawaiian and Other Pacific Islander alone)
+    (RAC1P %in% c(1,2,3,6,9))) %>%  #Filtering out RAC1P variables that don't have enough data (Alaska Native alone,American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races, Native Hawaiian and Other Pacific Islander alone)
   mutate(
     PWGTP = as.numeric(PWGTP),
     PINCP = as.numeric(PINCP),
@@ -204,7 +269,7 @@ us_pums_IRC <-
   cleaned %>%
   filter(
     (CPLT %in% c(1, 3)), #Filtering out opposite-sex couples
-    (RAC1P %in% c(1,2,3,6,8,9))) %>%  #Filtering out RAC1P variables that don't have enough data (Alaska Native alone,American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races, Native Hawaiian and Other Pacific Islander alone)
+    (RAC1P %in% c(1,2,3,6,9))) %>%  #Filtering out RAC1P variables that don't have enough data (Alaska Native alone,American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races, Native Hawaiian and Other Pacific Islander alone)
   mutate(
     PWGTP = as.numeric(PWGTP),
     PINCP = as.numeric(PINCP),
@@ -372,14 +437,75 @@ cleaned <- fl_pums %>%
     (CPLT %in% 1:4)) #filtering out N/A
 ```
 
-### Florida
+### Texas
+
+```{r}
+fl_pums_pop <-
+  cleaned %>%
+  filter(
+    (RAC1P %in% c(1,2,3,6,9))) %>% 
+  mutate(
+    same_sex = ifelse(
+        (CPLT == 2)|(CPLT == 4),
+        1,
+        0
+  )) %>% 
+  group_by(PUMA) %>% 
+  summarize(
+    samesex = sum(same_sex, na.rm = T),
+    total_pop = sum(CPLT, na.rm = T)
+  ) %>% 
+  mutate(
+    percent = samesex/total_pop*100
+  ) %>% 
+    left_join(
+    fl_pumas %>% 
+      select(PUMACE10),
+    by = c("PUMA" = "PUMACE10")
+  ) %>% 
+  st_as_sf()
+```
+
+```{r}
+couple_pal <- colorNumeric(
+  palette = "Blues",
+  domain = 
+    c(0,5)
+)
+
+leaflet() %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
+  addPolygons(
+    data = fl_pums_pop, 
+    fillColor = ~couple_pal (percent),
+    color = "white",
+    opacity = 0.5,
+    fillOpacity = 0.75,
+    weight = 1,
+    label = ~paste0(
+      round(percent*100)/100,
+      "% same-sex couples"
+    ),
+    highlightOptions = highlightOptions(
+      weight = 2,
+      opacity = 1
+    )
+  ) %>% 
+  addLegend(
+    data = fl_pums_pop,
+    pal = couple_pal,
+    values = 0:5,
+    title = "% same-sex relationships"
+  )
+
+```
 
 ```{r}
 fl_pums_IRC <-
   cleaned %>%
   filter(
     (CPLT %in% c(2, 4)), #Filtering out opposite-sex couples
-    (RAC1P %in% c(1,2,3,6,8,9))) %>%  #Filtering out RAC1P variables that don't have enough data (Alaska Native alone,American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races, Native Hawaiian and Other Pacific Islander alone)
+    (RAC1P %in% c(1,2,3,6,9))) %>%  #Filtering out RAC1P variables that don't have enough data (Alaska Native alone,American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races, Native Hawaiian and Other Pacific Islander alone)
   mutate(
     PWGTP = as.numeric(PWGTP),
     PINCP = as.numeric(PINCP),
@@ -480,7 +606,7 @@ fl_pums_IRC %>%
   labs(
     x = "Household income",
     y = "Number of households",
-    title = "Florida personal income by race: Individuals in same-sex relationships",
+    title = "Texas personal income by race: Individuals in same-sex relationships",
     fill = "Race"
   ) +
   coord_flip() +
@@ -500,7 +626,7 @@ fl_pums_IRC <-
   cleaned %>%
   filter(
     (CPLT %in% c(1, 3)), #Filtering out same-sex couples
-    (RAC1P %in% c(1,2,3,6,8,9))) %>%  #Filtering out RAC1P variables that don't have enough data (Alaska Native alone,American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races, Native Hawaiian and Other Pacific Islander alone, Some Other Race alone)
+    (RAC1P %in% c(1,2,3,6,9))) %>%  #Filtering out RAC1P variables that don't have enough data (Alaska Native alone,American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races, Native Hawaiian and Other Pacific Islander alone, Some Other Race alone)
   mutate(
     PWGTP = as.numeric(PWGTP),
     PINCP = as.numeric(PINCP),
@@ -601,7 +727,7 @@ fl_pums_IRC %>%
   labs(
     x = "Household income",
     y = "Number of households",
-    title = "Florida personal income by race: Individuals in opposite-sex relationships",
+    title = "Texas personal income by race: Individuals in opposite-sex relationships",
     fill = "Race"
   ) +
   coord_flip() +
@@ -635,6 +761,7 @@ pums_2019_1yr <- getCensus(
     "SEX" #sex
   )
 )
+saveRDS(pums_2019_1yr, "final_pums.rds")
 ```
 
 ```{r}
@@ -672,6 +799,68 @@ cleaned <- ca_pums %>%
 ```
 
 ## California
+
+```{r}
+ca_pums_pop <-
+  cleaned %>%
+  filter(
+    (RAC1P %in% c(1,2,3,6,9))) %>% 
+  mutate(
+    same_sex = ifelse(
+        (CPLT == 2)|(CPLT == 4),
+        1,
+        0
+  )) %>% 
+  group_by(PUMA) %>% 
+  summarize(
+    samesex = sum(same_sex, na.rm = T),
+    total_pop = sum(CPLT, na.rm = T)
+  ) %>% 
+  mutate(
+    percent = samesex/total_pop*100
+  ) %>% 
+    left_join(
+    ca_pumas %>% 
+      select(PUMACE10),
+    by = c("PUMA" = "PUMACE10")
+  ) %>% 
+  st_as_sf()
+```
+
+```{r}
+couple_pal <- colorNumeric(
+  palette = "Blues",
+  domain = 
+    c(0,5)
+)
+
+leaflet() %>% 
+  addProviderTiles(providers$CartoDB.Positron) %>% 
+  addPolygons(
+    data = ca_pums_pop, 
+    fillColor = ~couple_pal (percent),
+    color = "white",
+    opacity = 0.5,
+    fillOpacity = 0.75,
+    weight = 1,
+    label = ~paste0(
+      round(percent*100)/100,
+      "% same-sex couples"
+    ),
+    highlightOptions = highlightOptions(
+      weight = 2,
+      opacity = 1
+    )
+  ) %>% 
+  addLegend(
+    data = ca_pums_pop,
+    pal = couple_pal,
+    values = 0:5,
+    title = "% same-sex relationships"
+  )
+
+```
+
 
 ```{r}
 ca_pums_IRC <-
