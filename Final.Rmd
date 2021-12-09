@@ -506,7 +506,7 @@ leaflet() %>%
 
 ```
 
-```{r}
+```{r Florida Race and Income Same-Sex}
 fl_pums_IRC <-
   cleaned %>%
   filter(
@@ -576,11 +576,6 @@ fl_pums_IRC <-
       race
     ),
     race = ifelse(
-      (RAC1P == 8),
-      "Some other race alone",
-      race
-    ),
-    race = ifelse(
       (RAC1P == 9),
       "Two or More Races",
       race
@@ -597,14 +592,14 @@ fl_race_total <-
 
 fl_pums_IRC %>% 
   group_by(income, race) %>% 
-  summarize(estimate = sum(estimate)) %>% 
+  summarize(estimate = sum(PWGTP)) %>% 
   rbind(fl_race_total) %>%  
   ggplot() +
   geom_bar(
     aes(
       x = income %>% factor(levels = rev(c("Total", mixedsort(order)))),
       y = estimate,
-      fill = race %>% factor(levels = rev(unique(fl_pums_IRC$race)))
+      fill = race 
     ),
     stat = "identity",
     position = "fill"
@@ -612,7 +607,7 @@ fl_pums_IRC %>%
   labs(
     x = "Household income",
     y = "Number of households",
-    title = "Texas personal income by race: Individuals in same-sex relationships",
+    title = "Florida personal income by race: Individuals in same-sex relationships",
     fill = "Race"
   ) +
   coord_flip() +
