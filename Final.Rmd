@@ -111,31 +111,31 @@ cleaned <- us_pums %>%
 ```
 
 ```{r us pop data}
-# us_pums_pop <-
-#   cleaned %>%
-#   filter(
-#     (RAC1P %in% c(1,2,3,6,9))) %>% 
-#   mutate(
-#     same_sex = ifelse(
-#         (CPLT == 2)|(CPLT == 4),
-#         1,
-#         0
-#   )) %>% 
-#   group_by(GEOID) %>% 
-#   summarize(
-#     samesex = sum(same_sex, na.rm = T),
-#     total_pop = sum(CPLT, na.rm = T)
-#   ) %>% 
-#   mutate(
-#     percent = samesex/total_pop*100
-#   ) %>% 
-#     left_join(
-#     us_pumas %>% 
-#       select(GEOID10),
-#     by = c("GEOID" = "GEOID10")
-#   ) %>% 
-#   st_as_sf()
-# saveRDS(us_pums_pop, "usa_pums_pop.rds")
+us_pums_pop <-
+  cleaned %>%
+  filter(
+    (RAC1P %in% c(1,2,3,6,9))) %>%
+  mutate(
+    same_sex = ifelse(
+        (CPLT == 2)|(CPLT == 4),
+        1,
+        0
+  )) %>%
+  group_by(GEOID) %>%
+  summarize(
+    samesex = sum(same_sex, na.rm = T),
+    total_pop = sum(CPLT, na.rm = T)
+  ) %>%
+  mutate(
+    percent = samesex/total_pop*100
+  ) %>%
+    left_join(
+    us_pumas %>%
+      select(GEOID10),
+    by = c("GEOID" = "GEOID10")
+  ) %>%
+  st_as_sf()
+saveRDS(us_pums_pop, "usa_pums_pop.rds")
 ```
 
 
@@ -860,9 +860,7 @@ ca_pums_pop <-
     by = c("PUMA" = "PUMACE10")
   ) %>% 
   st_as_sf()
-```
 
-```{r California Map Same-Sex}
 couple_pal <- colorNumeric(
   palette = "Blues",
   domain = 
@@ -2520,15 +2518,24 @@ ca_pums_income_gender <-
       (SEX == 2),
        1,
       0),
+    men_inc = ifelse(
+      (SEX == 1),
+       PINCP,
+      0),
+    fem_inc = ifelse(
+      (SEX == 2),
+       PINCP,
+      0)
   ) %>% 
   group_by(PUMA) %>% 
   summarize(
     male = sum(male, na.rm = T),
     female = sum(female, na.rm = T),
-    income = sum(PINCP, na.rm = T)) %>% 
+    incomem = sum(men_inc, na.rm = T),
+    incomef = sum(fem_inc, na.rm = T)) %>% 
   mutate(
-    average_female_income = income/female,
-    average_male_income = income/male,
+    average_female_income = incomef/female,
+    average_male_income = incomem/male,
     ratio = average_female_income/average_male_income
   ) %>% 
     left_join(
@@ -2568,7 +2575,6 @@ leaflet() %>%
     values = 0:8.5,
     title = "Ratio of personal income Women:Men -- Individuals in same-sex relationship"
   )
-
 ```
 
 ```{r Map Average}
@@ -2588,15 +2594,24 @@ ca_pums_income_gender <-
       (SEX == 2),
        1,
       0),
+    men_inc = ifelse(
+      (SEX == 1),
+       PINCP,
+      0),
+    fem_inc = ifelse(
+      (SEX == 2),
+       PINCP,
+      0)
   ) %>% 
   group_by(PUMA) %>% 
   summarize(
     male = sum(male, na.rm = T),
     female = sum(female, na.rm = T),
-    income = sum(PINCP, na.rm = T)) %>% 
+    incomem = sum(men_inc, na.rm = T),
+    incomef = sum(fem_inc, na.rm = T)) %>% 
   mutate(
-    average_female_income = income/female,
-    average_male_income = income/male,
+    average_female_income = incomef/female,
+    average_male_income = incomem/male,
     ratio = average_female_income/average_male_income
   ) %>% 
     left_join(
@@ -2609,7 +2624,7 @@ ca_pums_income_gender <-
 couple_pal <- colorNumeric(
   palette = "Greens",
   domain = 
-    c(.95,1.05)
+    c(0,8.5)
 )
 
 leaflet() %>% 
@@ -2633,15 +2648,13 @@ leaflet() %>%
   addLegend(
     data = ca_pums_income_same,
     pal = couple_pal,
-    values = .95:1.05,
-    title = "Ratio of personal income Women:Men-- Individuals in opposite-sex relationship"
+    values = 0:8.5,
+    title = "Ratio of personal income Women:Men -- Individuals in opposite-sex relationship"
   )
-
 ```
 
 
 ```{r same-Sex Gender Equity Analysis}
-
 ca_pums_IRC <-
   cleaned %>%
   filter(
@@ -3169,6 +3182,36 @@ ca_pums_IRC %>%
     )
   )
 ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
