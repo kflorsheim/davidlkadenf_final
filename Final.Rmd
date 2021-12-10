@@ -24,6 +24,9 @@ library(gtools)
 Sys.setenv(CENSUS_KEY="9fbd5ddd430b595b8f3715733cae2b75c18be92e")
 ```
 
+#Dashboard ---https://dludeke.shinyapps.io/Final_KadenFDavidL/
+
+
 ## SAME-SEX AND RACE EQUITY ANALYSIS
 ```{r loading US ACS}
 # pums_2019_1yru <- getCensus(
@@ -174,8 +177,13 @@ leaflet() %>%
   )
 
 ```
-#There were a few outlyers that were filtered out to maintain a more observable color gradient. Palm Springs was the largest and had 17.62% same-sex couples.
+#To maintain a more observable color gradient, a few outlyers were filtered out. Palm Springs was the largest and had 17.62% same-sex couples.
 
+#Most of the PUMA's had between 0% and 2% same-sex couples. It is important to note that in this assignment the populations that we are comparing (Same-sex couples vs. Opposite Sex Couples) are vastly different sizes.
+
+#Some races were filtered out of the US and Florida maps so that they will be easier to compare to the California map. We filtered out these races because the same-sex sample size was too small.
+
+# Key Assumptions: We are assuming that the first two SPORDER (person numbers: 1, 2) are the two people in the relationship. Additionally, there are no census questions directly asking for sexualities, but there are questions pertaining to the gender of the two heads of households and their marital status (married or unmarried). Since we are only working with couples data, the number of people that we are using in each data set is reduced. We are including unmarried couples and assuming that they are in a cohabitation agreement. 
 
 ### USA
 
@@ -303,6 +311,7 @@ us_pums_IRC %>%
     )
   )
 ```
+##Across the US, there areobservable inequities amongst races within same-sex communities. White people make up a slightly disproportionate ammount of people making over $250,001 and also a disproportinatly low amount of people making less than $20,000. Asian American people make up a consistent proportion of people at every level. Two or more Races makes up a dispproportionate amount of people making less than $20,000. Black or African American people also make up a disproportinate amount of people making less than $20,000 and then make up a disproprtionatly low amount at higher income tiers ($50,000 and up.) This plot does suggest inequities that are particularly advantagous for white people and disadvantagous for black or African American people. 
 
 ```{r US race and income}
 us_pums_IRC <-
@@ -419,6 +428,8 @@ us_pums_IRC %>%
     )
   )
 ```
+#Amongst people in opposite-sex relationships, similar trends prevail in the data however to a smaller degree. The proportions for White only and Two or More Races at every income tier are more consistent. Black or African American people make up a larger proportion of low-income people and a smaller proportion of high income people. Asian Americans on average make up a slightly larger proportion of high income people. 
+
 
 ```{r loading Florida ACS data}
 # pums_2019_1yrf <- getCensus(
@@ -537,6 +548,10 @@ leaflet() %>%
   )
 
 ```
+#To maintain a more observable color gradient, a few outlyers were filtered out. The largest PUMA was in Fort Lauderdale and it had 6.88% same-sex couples.
+
+#We wanted to see how the inequities in another populous state would compare to the inequities in California. We chose Florida because it is the third largest state by population (after California and Texas), but it is also more 
+#diverse than Texas. 
 
 ```{r Florida Race and Income Same-Sex}
 fl_pums_IRC <-
@@ -658,6 +673,9 @@ fl_pums_IRC %>%
     )
   )
 ```
+#We included 'Other Race' in this plot because the results were interesting. 
+#Generally Florida's personal income equity analysis amongst people in same-sex relationships if less equitable than the national equity analysis conducted above. White people make up a disproportionatly high proportion of people making between $80,001 and $250,000. There are the only race included that appears in the $200,000 to $250,000 tier. This is most likely due the a lower sample size. Asian people make up a very low proportion of the overall population however they make up a significantly larger proportion of people making $250,001 and more. Black or African American data is similar to the national data. They make up a disproportionatly low proportion of the highest income tier and a disproportinaly high proportion of the lowest income tier.
+
 
 ```{r Florida Op-Sex Race Income}
 fl_pums_IRC <-
@@ -779,6 +797,8 @@ fl_pums_IRC %>%
     )
   )
 ```
+#The results for the race-income equity analysis of people in opposite-sex relationships resembles the national results more than the equtiy analysis of people in same-sex relationships--Probably because the sample size is larger. Some other race alone and Black or African American alone make are disproportinaly represented in high income tiers ($80,000 and up.)
+
 
 ```{r Loading California ACS Data}
 # pums_2019_1yr <- getCensus(
@@ -893,7 +913,10 @@ leaflet() %>%
   )
 
 ```
-#There were a few outlyers that were filtered out to maintain a more observable color gradient. Palm Springs was the largest and had 160 same-sex couples. Why are there odd numbers?
+
+#For this map we decided to include the actual counts of people in same-sex relationships rather than the percentages.This is another reminder of the sample size and how low it is in reality. 
+
+#To maintain a more observable color gradient, a few outlyers were filtered out. Palm Springs was the largest and had 320 people same-sex relationships.
 
 
 ```{r CA Race and Income}
@@ -1011,6 +1034,9 @@ ca_pums_IRC %>%
     )
   )
 ```
+#This equity analysis has the least consistent data of the three for same-sex (USA, Florida, California.) White Only make up a disproportiate ammount of people making $250,000 alone but other than that they are pretty proportionate at every tier. Asian alone make up a slightly higher proportion of people making $200,001 to $250,000 and a lower proportion of people making $250,000 or more. American Indians make up a slightly higher proportion of people making between $20,001 and $50,000. Two or more races is pretty proportionate at every income tier except '$250,000 or more.' The most observable trend in Black or African American, which shrink in proportions as the income tier increases, but to a smaller degree than the other equity analysis'. The income tiers between $0 and $50,000 are consistent with the total population data.
+
+
 
 ```{r CA Race and Income Op-Sex}
 ca_pums_IRC <-
@@ -1127,7 +1153,7 @@ ca_pums_IRC %>%
     )
   ) 
 ```
-
+#This is the most consisten equity analysis. There is a much larger proportion of Asian people in California than in Florida or USA. This data suggests that there is more racial inequity within same-sex couple groupings than opposite-sex couple groupings. 
 
 ## EQUITY ANALYSIS BETWEEN SAME-SEX COUPLES AND OPPOSITE-SEX COUPLES DISAGGREGATED BY RACE 
 
@@ -1195,6 +1221,9 @@ leaflet() %>%
   )
 
 ```
+#This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have same-sex couple data.
+#The is a large range of data. Some PUMAs have 100% low income same-sex couples and there is also a PUMA that has 0%.
+
 
 ```{r Op-sex  making less than 50k}
 ca_pums_income_op <-
@@ -1260,7 +1289,8 @@ leaflet() %>%
   )
 
 ```
-
+#This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have opposite-sex couple data.
+#This data is consistently arount the %40-%60 range.
 
 ```{r Income}
 ca_pums_IRC <-
@@ -1354,6 +1384,9 @@ ca_pums_IRC %>%
     )
   )
 ```
+#There does not appear to be a large change in proportions across different income tiers. Same-sex couples make up a slightly high proportion of people making $200,001 to $250,000.
+
+
 
 ## White Alone
 
@@ -1422,6 +1455,8 @@ leaflet() %>%
 
 ```
 
+##This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have same-sex couple data.
+
 ```{r op-sex white map}
 ca_pums_income_op <-
   cleaned %>%
@@ -1486,6 +1521,10 @@ leaflet() %>%
   )
 
 ```
+
+#This map reveals the percentage of people within each PUMA that make below $50,000. Grey PUMAs are PUMAs that did not have same-sex couple data.
+
+#There appears to be a low average percentage of people making less than $50,000. PUMAS that are located in the Bay Area and near cities like Los Angeles have lower percentage than more inland PUMAS.
 
 ```{r white income}
 ca_pums_IRC <-
@@ -1582,6 +1621,8 @@ ca_pums_IRC %>%
     )
   )
 ```
+#There does not appear to be a large change in proportions across different income tiers
+
 
 ## Black or African American alone
 
@@ -1649,6 +1690,7 @@ leaflet() %>%
   )
 
 ```
+#This map reveals the percentage of people within each PUMA that make below $50,000. Grey PUMAs are PUMAs that did not have same-sex couple data. There are many grey areas due to a small sample size and most of the PUMA's appear to be low-income.
 
 ```{r map op-sex black }
 ca_pums_income_op <-
@@ -1714,7 +1756,7 @@ leaflet() %>%
   )
 
 ```
-
+#This map reveals the percentage of people within each PUMA that make below $50,000. Grey PUMAs are PUMAs that did not have same-sex couple data.
 
 ```{r income black}
 ca_pums_IRC <-
@@ -1812,6 +1854,8 @@ ca_pums_IRC %>%
     )
   )
 ```
+#There does not appear to be a large change in proportions across different income tiers. Same-sex couples make up a larger proportion of people making $200,001 to $250,000.
+
 
 ## Asian American Alone
 
