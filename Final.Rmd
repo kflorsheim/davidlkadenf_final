@@ -183,7 +183,7 @@ leaflet() %>%
 
 #Some races were filtered out of the US and Florida maps so that they will be easier to compare to the California map. We filtered out these races because the same-sex sample size was too small.
 
-# Key Assumptions: We are assuming that the first two SPORDER (person numbers: 1, 2) are the two people in the relationship. Additionally, there are no census questions directly asking for sexualities, but there are questions pertaining to the gender of the two heads of households and their marital status (married or unmarried). Since we are only working with couples data, the number of people that we are using in each data set is reduced. We are including unmarried couples and assuming that they are in a cohabitation agreement. 
+#Key Assumptions: We are assuming that the first two SPORDER (person numbers: 1, 2) are the two people in the relationship. Additionally, there are no census questions directly asking for sexualities, but there are questions pertaining to the gender of the two heads of households and their marital status (married or unmarried). Since we are only working with couples data, the number of people that we are using in each data set is reduced. We are including unmarried couples and assuming that they are in a cohabitation agreement. 
 
 ### USA
 
