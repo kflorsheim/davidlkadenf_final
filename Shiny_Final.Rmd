@@ -22,11 +22,15 @@ library(shiny)
 
 order <- c( "$20,000 or less", "$20,001 to $50,000","$50,001 to $80,000","$80,001 to $100,000","$100,001 to $150,000","$150,001 to $200,000","$200,001 to $250,000","$250,001 or more")
 
-
-usa_pums_pop <- readRDS("usa_pums_pop.rds")
+# Load RDS files for each location and couple type
 usa_chart_data <- readRDS("usa_chart_data.rds")
+usa_chart_data_opp <- readRDS("usa_chart_data_opp.rds")
 
+fl_chart_data <- readRDS("fl_chart_data.rds")
+fl_chart_data_opp <- readRDS("fl_chart_data_opp.rds")
 
+ca_chart_data <- readRDS("ca_chart_data.rds")
+ca_chart_data_opp <- readRDS("ca_chart_data_opp.rds")
 ```
 
 
@@ -68,8 +72,28 @@ plotlyOutput("plot")
 observeEvent({
   input$location
   input$couple_type}, {
-    
-  chart <- usa_chart_data %>%  
+  
+  data <- if (input$location == "USA") {
+    if (input$couple_type == "Same-sex couples") {
+      usa_chart_data
+    } else {
+      usa_chart_data_opp
+    }
+  } else if (input$location == "Florida") {
+    if (input$couple_type == "Same-sex couples") {
+      fl_chart_data
+    } else {
+      fl_chart_data_opp
+    }
+  } else {
+    if (input$couple_type == "Same-sex couples") {
+      ca_chart_data
+    } else {
+      ca_chart_data_opp
+    }
+  }
+  
+  chart <- data %>%  
   ggplot() +
   geom_bar(
     aes(
@@ -83,7 +107,7 @@ observeEvent({
   labs(
     x = "Household income",
     y = "Number of households",
-    title = "US personal income by race: Individuals in same-sex relationships",
+    title = paste0(input$location, " personal income by race: Individuals in ", input$couple_type),
     fill = "Race"
   ) +
   coord_flip() +

@@ -33,6 +33,7 @@ Sys.setenv(CENSUS_KEY="9fbd5ddd430b595b8f3715733cae2b75c18be92e")
 
 Dashboard ---https://dludeke.shinyapps.io/Final_KadenFDavidL/
 
+## PUT IN INTRODUCTION HEREEEE
 
 SAME-SEX AND RACE EQUITY ANALYSIS
 ```{r loading US ACS}
@@ -286,17 +287,18 @@ us_race_total <-
   group_by(race) %>%
   summarize(estimate = sum(PWGTP)) %>%
   mutate(income = "Total")
-# 
-# usa_chart_data <- us_pums_IRC %>% 
-#   group_by(income, race) %>% 
-#   summarize(estimate = sum(PWGTP)) %>% 
-#   rbind(us_race_total) 
 
+usa_chart_data <- us_pums_IRC %>%
+  group_by(income, race) %>%
+  summarize(estimate = sum(PWGTP)) %>%
+  rbind(us_race_total)
 
-# saveRDS(usa_chart_data, "usa_chart_data.rds")
+saveRDS(usa_chart_data, "usa_chart_data.rds")
 ```
 
 ```{r}
+usa_chart_data <- readRDS("usa_chart_data.rds")
+
 usa_chart_data %>%  
   ggplot() +
   geom_bar(
@@ -411,10 +413,19 @@ us_race_total <-
   summarize(estimate = sum(PWGTP)) %>% 
   mutate(income = "Total")
 
-us_pums_IRC %>% 
-  group_by(income, race) %>% 
-  summarize(estimate = sum(PWGTP)) %>% 
-  rbind(us_race_total) %>%  
+usa_chart_data_opp <- us_pums_IRC %>%
+  group_by(income, race) %>%
+  summarize(estimate = sum(PWGTP)) %>%
+  rbind(us_race_total)
+
+saveRDS(usa_chart_data_opp, "usa_chart_data_opp.rds")
+```
+
+
+```{r}
+usa_chart_data_opp <- readRDS("usa_chart_data_opp.rds")
+
+usa_chart_data_opp %>%  
   ggplot() +
   geom_bar(
     aes(
@@ -657,10 +668,19 @@ fl_race_total <-
   summarize(estimate = sum(PWGTP)) %>% 
   mutate(income = "Total")
 
-fl_pums_IRC %>% 
-  group_by(income, race) %>% 
-  summarize(estimate = sum(PWGTP)) %>% 
-  rbind(fl_race_total) %>%  
+fl_chart_data <- fl_pums_IRC %>%
+  group_by(income, race) %>%
+  summarize(estimate = sum(PWGTP)) %>%
+  rbind(fl_race_total)
+
+saveRDS(fl_chart_data, "fl_chart_data.rds")
+```
+
+
+```{r}
+fl_chart_data <- readRDS("fl_chart_data.rds")
+
+fl_chart_data %>%  
   ggplot() +
   geom_bar(
     aes(
@@ -781,10 +801,19 @@ fl_race_total <-
   summarize(estimate = sum(PWGTP)) %>% 
   mutate(income = "Total")
 
-fl_pums_IRC %>% 
+fl_chart_data_opp <- fl_pums_IRC %>% 
   group_by(income, race) %>% 
   summarize(estimate = sum(PWGTP)) %>% 
-  rbind(fl_race_total) %>%  
+  rbind(fl_race_total) 
+
+saveRDS(fl_chart_data_opp, "fl_chart_data_opp.rds")
+```
+
+
+```{r}
+fl_chart_data_opp <- readRDS("fl_chart_data_opp.rds")
+
+fl_chart_data_opp %>%  
   ggplot() +
   geom_bar(
     aes(
@@ -1011,17 +1040,26 @@ ca_pums_IRC <-
 ```
 
 Individual in same-sex relationship personal income by race
-```{r Same-Sex CA Equity Analysis}
+```{r Same-Sex CA Equity Analysis RDS}
 ca_race_total <-
   ca_pums_IRC %>% 
   group_by(race) %>% 
   summarize(estimate = sum(PWGTP)) %>% 
   mutate(income = "Total")
 
-ca_pums_IRC %>% 
+ca_chart_data <- ca_pums_IRC %>% 
   group_by(income, race) %>% 
   summarize(estimate = sum(PWGTP)) %>% 
-  rbind(ca_race_total) %>%  
+  rbind(ca_race_total) 
+
+saveRDS(ca_chart_data, "ca_chart_data.rds")
+```
+
+
+```{r}
+ca_chart_data <- readRDS("ca_chart_data.rds")
+
+ca_chart_data %>%  
   ggplot() +
   geom_bar(
     aes(
@@ -1137,10 +1175,19 @@ ca_race_total <-
   summarize(estimate = sum(PWGTP)) %>% 
   mutate(income = "Total")
 
-ca_pums_IRC %>% 
+ca_chart_data_opp <- ca_pums_IRC %>% 
   group_by(income, race) %>% 
   summarize(estimate = sum(PWGTP)) %>% 
-  rbind(ca_race_total) %>%  
+  rbind(ca_race_total)
+
+saveRDS(ca_chart_data_opp, "ca_chart_data_opp.rds")
+```
+
+
+```{r}
+ca_chart_data_opp <- readRDS("ca_chart_data_opp.rds")
+
+ca_chart_data_opp %>%  
   ggplot() +
   geom_bar(
     aes(
