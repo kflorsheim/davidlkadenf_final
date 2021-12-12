@@ -1,5 +1,5 @@
 ---
-title: "Shiny_Final"
+title: "Dashboard Final Project - Kaden & David"
 runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
@@ -17,8 +17,15 @@ library(mapview)
 library(leaflet)
 library(censusapi)
 library(gtools)
+library(shiny)
+
+
+order <- c( "$20,000 or less", "$20,001 to $50,000","$50,001 to $80,000","$80,001 to $100,000","$100,001 to $150,000","$150,001 to $200,000","$200,001 to $250,000","$250,001 or more")
+
 
 usa_pums_pop <- readRDS("usa_pums_pop.rds")
+usa_chart_data <- readRDS("usa_chart_data.rds")
+
 
 ```
 
@@ -27,23 +34,23 @@ Inputs {.sidebar}
 -------------------------------------
 
 ```{r}
-checkboxGroupInput(
-  inputId = "year",
-  label = "Year: ",
-  choices = 2017:2020,
-  selected = 2020
+selectInput(
+  inputId = "location",
+  label = "Location: ",
+  choices = c("USA",
+              "Florida", 
+              "California"),
+  selected = "USA"
 )
 ```
 
 ```{r}
 selectInput(
-  inputId = "class",
-  label = "Energy Type: ",
-  choices = c("Residential Electricity" = "Elec- Residential",
-              "Commercial Electricity" = "Elec- Commercial", 
-              "Residential Gas" = "Gas- Residential",
-              "Commercial Gas" = "Gas- Commercial"),
-  selected = "Residential Electricity"
+  inputId = "couple_type",
+  label = "Couple Type: ",
+  choices = c("Same-sex couples",
+              "Opposite-sex couples"),
+  selected = "Same-sex couples"
 )
 ```
 
@@ -51,113 +58,117 @@ selectInput(
 Column
 -------------------------------------
 
-### USA Map
+### Equity Analysis of Same-sex/Opposite-sex couples by Race
 
 ```{r}
-leafletOutput("map")
+plotlyOutput("plot")
 ```
 
 ```{r, context = "server"}
 observeEvent({
-  input$year
-  input$class},
-  { 
-couple_pal <- colorNumeric(
-  palette = "Blues",
-  domain = 
-    c(0,5)
-)
-
-output$map <- renderLeaflet({
-leaflet() %>% 
-  addProviderTiles(providers$CartoDB.Positron) %>% 
-  addPolygons(
-    data = usa_pums_pop, 
-    fillColor = ~couple_pal (percent),
-    color = "white",
-    opacity = 0.5,
-    fillOpacity = 0.75,
-    weight = 1,
-    label = ~paste0(
-      round(percent*100)/100,
-      "% same-sex couples"
+  input$location
+  input$couple_type}, {
+    
+  chart <- usa_chart_data %>%  
+  ggplot() +
+  geom_bar(
+    aes(
+      x = income %>% factor(levels = rev(c("Total", mixedsort(order)))),
+      y = estimate,
+      fill = race 
     ),
-    highlightOptions = highlightOptions(
-      weight = 2,
-      opacity = 1
+    stat = "identity",
+    position = "fill"
+  ) +
+  labs(
+    x = "Household income",
+    y = "Number of households",
+    title = "US personal income by race: Individuals in same-sex relationships",
+    fill = "Race"
+  ) +
+  coord_flip() +
+  theme(
+    legend.position = "bottom",
+    legend.direction = "vertical"
+  )  +
+  guides(
+    fill = guide_legend(
+      reverse = T
     )
-  ) %>% 
-  addLegend(
-    data = usa_pums_pop,
-    pal = couple_pal,
-    values = 0:5,
-    title = "% same-sex relationships"
   )
-})
 
-})
+  output$plot <- renderPlotly({
+    chart %>%
+      ggplotly() %>%
+      config(displayModeBar = F)
+  })
+
+},
+  ignoreNULL = T)
 
 ```
 
 
-Column
--------------------------------------
 
-<!-- ### ZCTA consumption -->
+<!-- Column -->
+<!-- ------------------------------------- -->
 
 <!-- ```{r} -->
-<!-- plotlyOutput("plot") -->
+
+
+
+<!-- ``` -->
+
+
+
+
+<!-- ### USA Map -->
+
+<!-- ```{r} -->
+<!-- leafletOutput("map") -->
 <!-- ``` -->
 
 <!-- ```{r, context = "server"} -->
 <!-- observeEvent({ -->
 <!--   input$year -->
-<!--   input$class}, { # wrapper to make it listen to changes in input$year and update the display accordingly -->
-<!--   # Identify correct label for energy type -->
-<!--   class <- input$class -->
-<!--   if (class == "Elec- Residential") class = "Residential Electricity" -->
-<!--   else if (class == "Elec- Commercial") class = "Commercial Electricity" -->
-<!--   else if (class == "Gas- Residential") class = "Residential Gas" -->
-<!--   else if (class == "Gas- Commercial") class = "Commercial Gas" -->
+<!--   input$class}, -->
+<!--   {  -->
+<!-- couple_pal <- colorNumeric( -->
+<!--   palette = "Blues", -->
+<!--   domain =  -->
+<!--     c(0,5) -->
+<!-- ) -->
 
-<!--   chart <- us_pums_IRC %>%  -->
-<!--   group_by(income, race) %>%  -->
-<!--   summarize(estimate = sum(PWGTP)) %>%  -->
-<!--   rbind(us_race_total) %>%   -->
-<!--   ggplot() + -->
-<!--   geom_bar( -->
-<!--     aes( -->
-<!--       x = income %>% factor(levels = rev(c("Total", mixedsort(order)))), -->
-<!--       y = estimate, -->
-<!--       fill = race  -->
+<!-- output$map <- renderLeaflet({ -->
+<!-- leaflet() %>%  -->
+<!--   addProviderTiles(providers$CartoDB.Positron) %>%  -->
+<!--   addPolygons( -->
+<!--     data = usa_pums_pop,  -->
+<!--     fillColor = ~couple_pal (percent), -->
+<!--     color = "white", -->
+<!--     opacity = 0.5, -->
+<!--     fillOpacity = 0.75, -->
+<!--     weight = 1, -->
+<!--     label = ~paste0( -->
+<!--       round(percent*100)/100, -->
+<!--       "% same-sex couples" -->
 <!--     ), -->
-<!--     stat = "identity", -->
-<!--     position = "fill" -->
-<!--   ) + -->
-<!--   labs( -->
-<!--     x = "Household income", -->
-<!--     y = "Number of households", -->
-<!--     title = "US personal income by race: Individuals in same-sex relationships", -->
-<!--     fill = "Race" -->
-<!--   ) + -->
-<!--   coord_flip() + -->
-<!--   theme( -->
-<!--     legend.position = "bottom", -->
-<!--     legend.direction = "vertical" -->
-<!--   )  + -->
-<!--   guides( -->
-<!--     fill = guide_legend( -->
-<!--       reverse = T -->
+<!--     highlightOptions = highlightOptions( -->
+<!--       weight = 2, -->
+<!--       opacity = 1 -->
 <!--     ) -->
+<!--   ) %>%  -->
+<!--   addLegend( -->
+<!--     data = usa_pums_pop, -->
+<!--     pal = couple_pal, -->
+<!--     values = 0:5, -->
+<!--     title = "% same-sex relationships" -->
 <!--   ) -->
+<!-- }) -->
 
-<!--   output$plot <- renderPlotly({ # wrapper to keep output dynamic  -->
-<!--     chart %>%  -->
-<!--       ggplotly() %>%  -->
-<!--       config(displayModeBar = F) -->
-<!--   }) -->
-
-<!-- }, -->
-<!--   ignoreNULL = T) -->
+<!-- }) -->
 
 <!-- ``` -->
+
+
+

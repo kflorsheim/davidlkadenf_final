@@ -275,15 +275,22 @@ order <- c( "$20,000 or less", "$20,001 to $50,000","$50,001 to $80,000","$80,00
 ## Individual in same-sex relationship personal income by race
 ```{r us same-sex equity analysis}
 us_race_total <-
-  us_pums_IRC %>% 
-  group_by(race) %>% 
-  summarize(estimate = sum(PWGTP)) %>% 
+  us_pums_IRC %>%
+  group_by(race) %>%
+  summarize(estimate = sum(PWGTP)) %>%
   mutate(income = "Total")
+# 
+# usa_chart_data <- us_pums_IRC %>% 
+#   group_by(income, race) %>% 
+#   summarize(estimate = sum(PWGTP)) %>% 
+#   rbind(us_race_total) 
 
-us_pums_IRC %>% 
-  group_by(income, race) %>% 
-  summarize(estimate = sum(PWGTP)) %>% 
-  rbind(us_race_total) %>%  
+
+# saveRDS(usa_chart_data, "usa_chart_data.rds")
+```
+
+```{r}
+usa_chart_data %>%  
   ggplot() +
   geom_bar(
     aes(
