@@ -31,7 +31,7 @@ library(gtools)
 Sys.setenv(CENSUS_KEY="9fbd5ddd430b595b8f3715733cae2b75c18be92e")
 ```
 
-Dashboard ---https://dludeke.shinyapps.io/Final_KadenFDavidL/
+Dashboard --- https://dludeke.shinyapps.io/Final_KadenFDavidL/
 
 ## Introduction & Motivation: 
 

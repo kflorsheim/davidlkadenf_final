@@ -92,11 +92,13 @@ observeEvent({
     }
   }
   
+  income_bucket <- data$income %>% factor(levels = rev(c("Total", mixedsort(order))))
+  
   chart <- data %>%  
   ggplot() +
   geom_bar(
     aes(
-      x = income %>% factor(levels = rev(c("Total", mixedsort(order)))),
+      x = income_bucket,
       y = estimate,
       fill = race
     ),
