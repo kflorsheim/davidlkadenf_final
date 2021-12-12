@@ -5,6 +5,13 @@ date: "11/14/2021"
 output: html_document
 ---
 
+---
+title: "KadenFlorsheimDavidLüdeke_Final"
+author: "Kaden Florsheim & David Lüdeke"
+date: "11/14/2021"
+output: html_document
+---
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
 	echo = F,
@@ -24,10 +31,10 @@ library(gtools)
 Sys.setenv(CENSUS_KEY="9fbd5ddd430b595b8f3715733cae2b75c18be92e")
 ```
 
-#Dashboard ---https://dludeke.shinyapps.io/Final_KadenFDavidL/
+Dashboard ---https://dludeke.shinyapps.io/Final_KadenFDavidL/
 
 
-## SAME-SEX AND RACE EQUITY ANALYSIS
+SAME-SEX AND RACE EQUITY ANALYSIS
 ```{r loading US ACS}
 # pums_2019_1yru <- getCensus(
 #   name = "acs/acs1/pums",
@@ -177,15 +184,15 @@ leaflet() %>%
   )
 
 ```
-#To maintain a more observable color gradient, a few outlyers were filtered out. Palm Springs was the largest and had 17.62% same-sex couples.
+To maintain a more observable color gradient, a few outliers were filtered out. Palm Springs was the largest and had 17.62% same-sex couples.
 
-#Most of the PUMA's had between 0% and 2% same-sex couples. It is important to note that in this assignment the populations that we are comparing (Same-sex couples vs. Opposite Sex Couples) are vastly different sizes.
+Most of the PUMA's had between 0% and 2% same-sex couples. It is important to note that in this assignment the populations that we are comparing (Same-sex couples vs. Opposite Sex Couples) are vastly different sizes.
 
-#Some races were filtered out of the US and Florida maps so that they will be easier to compare to the California map. We filtered out these races because the same-sex sample size was too small.
+Some races were filtered out of the US and Florida maps so that they will be easier to compare to the California map. We filtered out these races because the same-sex sample size was too small.
 
-#Key Assumptions: We are assuming that the first two SPORDER (person numbers: 1, 2) are the two people in the relationship. Additionally, there are no census questions directly asking for sexualities, but there are questions pertaining to the gender of the two heads of households and their marital status (married or unmarried). Since we are only working with couples data, the number of people that we are using in each data set is reduced. We are including unmarried couples and assuming that they are in a cohabitation agreement. 
+Key Assumptions: We are assuming that the first two SPORDER (person numbers: 1, 2) are the two people in the relationship. Additionally, there are no census questions directly asking for sexualitys, but there are questions pertaining to the gender of the two heads of households and their marital status (married or unmarried). Since we are only working with couples data, the number of people that we are using in each data set is reduced. We are including unmarried couples and assuming that they are in a cohabitation agreement. 
 
-### USA
+USA
 
 ```{r US race / income}
 us_pums_IRC <-
@@ -272,7 +279,7 @@ us_pums_IRC <-
 order <- c( "$20,000 or less", "$20,001 to $50,000","$50,001 to $80,000","$80,001 to $100,000","$100,001 to $150,000","$150,001 to $200,000","$200,001 to $250,000","$250,001 or more")
 ```
 
-## Individual in same-sex relationship personal income by race
+Individual in same-sex relationship personal income by race
 ```{r us same-sex equity analysis}
 us_race_total <-
   us_pums_IRC %>% 
@@ -311,7 +318,7 @@ us_pums_IRC %>%
     )
   )
 ```
-##Across the US, there areobservable inequities amongst races within same-sex communities. White people make up a slightly disproportionate ammount of people making over $250,001 and also a disproportinatly low amount of people making less than $20,000. Asian American people make up a consistent proportion of people at every level. Two or more Races makes up a dispproportionate amount of people making less than $20,000. Black or African American people also make up a disproportinate amount of people making less than $20,000 and then make up a disproprtionatly low amount at higher income tiers ($50,000 and up.) This plot does suggest inequities that are particularly advantagous for white people and disadvantagous for black or African American people. 
+Across the US, there are observable inequities among races within same-sex communities. White people make up a slightly disproportionate number of people making over $250,001 and also a disproportinatly low number of people making less than $20,000. Asian American people make up a consistent proportion of people at every level. Two or more Races makes up a disproportionate amount of people making less than $20,000. Black or African American people also make up a disproportinate number of people making less than $20,000 and then make up a disproportionately low number at higher income tiers ($50,000 and up.) This plot does suggest inequities that are particularly advantageous for white people and disadvantageous for black or African American people. 
 
 ```{r US race and income}
 us_pums_IRC <-
@@ -389,7 +396,7 @@ us_pums_IRC <-
     )) 
 ```
 
-## Individual in opposite-sex relationship personal income by race
+Individual in opposite-sex relationship personal income by race
 ```{r US opposite-sex equity analysis}
 us_race_total <-
   us_pums_IRC %>% 
@@ -428,7 +435,8 @@ us_pums_IRC %>%
     )
   )
 ```
-#Amongst people in opposite-sex relationships, similar trends prevail in the data however to a smaller degree. The proportions for White only and Two or More Races at every income tier are more consistent. Black or African American people make up a larger proportion of low-income people and a smaller proportion of high income people. Asian Americans on average make up a slightly larger proportion of high income people. 
+
+Among people in opposite-sex relationships, similar trends prevail in the data however to a smaller degree. The proportions for White only and Two or More Races at every income tier are more consistent. Black or African American people make up a larger proportion of low-income people and a smaller proportion of high income people. Asian Americans on average make up a slightly larger proportion of high income people. 
 
 
 ```{r loading Florida ACS data}
@@ -486,7 +494,7 @@ cleaned <- fl_pums %>%
     (CPLT %in% 1:4)) #filtering out N/A
 ```
 
-### FLORIDA
+FLORIDA
 
 ```{r Florida Pop}
 fl_pums_pop <-
@@ -548,10 +556,10 @@ leaflet() %>%
   )
 
 ```
-#To maintain a more observable color gradient, a few outlyers were filtered out. The largest PUMA was in Fort Lauderdale and it had 6.88% same-sex couples.
+To maintain a more observable color gradient, a few outliers were filtered out. The largest PUMA was in Fort Lauderdale and it had 6.88% same-sex couples.
 
-#We wanted to see how the inequities in another populous state would compare to the inequities in California. We chose Florida because it is the third largest state by population (after California and Texas), but it is also more 
-#diverse than Texas. 
+We wanted to see how the inequities in another populous state would compare to the inequities in California. We chose Florida because it is the third largest state by population (after California and Texas), but it is also more 
+diverse than Texas. 
 
 ```{r Florida Race and Income Same-Sex}
 fl_pums_IRC <-
@@ -634,7 +642,7 @@ fl_pums_IRC <-
     )) 
 ```
 
-## Individual in same-sex relationship personal income by race
+Individual in same-sex relationship personal income by race
 ```{r Florida Equity Analysis Same-Sex}
 fl_race_total <-
   fl_pums_IRC %>% 
@@ -673,8 +681,8 @@ fl_pums_IRC %>%
     )
   )
 ```
-#We included 'Other Race' in this plot because the results were interesting. 
-#Generally Florida's personal income equity analysis amongst people in same-sex relationships if less equitable than the national equity analysis conducted above. White people make up a disproportionatly high proportion of people making between $80,001 and $250,000. There are the only race included that appears in the $200,000 to $250,000 tier. This is most likely due the a lower sample size. Asian people make up a very low proportion of the overall population however they make up a significantly larger proportion of people making $250,001 and more. Black or African American data is similar to the national data. They make up a disproportionatly low proportion of the highest income tier and a disproportinaly high proportion of the lowest income tier.
+We included 'Other Race' in this plot because the results were interesting. 
+Generally Florida's personal income equity analysis among people in same-sex relationships is less equitable than the national equity analysis conducted above. White people make up a disproportionately high proportion of people making between $80,001 and $250,000 and they are the only race included that appears in the $200,000 to $250,000 tier. This is most likely due the a lower sample size. Asian people make up a very low proportion of the overall population however they make up a significantly larger proportion of people making $250,001 and more. Black or African American data is similar to the national data. They make up a disproportionately low proportion of the highest income tier and a disproportionately high proportion of the lowest income tier.
 
 
 ```{r Florida Op-Sex Race Income}
@@ -758,7 +766,7 @@ fl_pums_IRC <-
     )) 
 ```
 
-## Individual in opposite-sex relationship personal income by race
+Individual in opposite-sex relationship personal income by race
 ```{r Op-Sex Florida Equity An}
 fl_race_total <-
   fl_pums_IRC %>% 
@@ -797,7 +805,7 @@ fl_pums_IRC %>%
     )
   )
 ```
-#The results for the race-income equity analysis of people in opposite-sex relationships resembles the national results more than the equtiy analysis of people in same-sex relationships--Probably because the sample size is larger. Some other race alone and Black or African American alone make are disproportinaly represented in high income tiers ($80,000 and up.)
+The results for the race-income equity analysis of people in opposite-sex relationships resembles the national results more than the equtiy analysis of people in same-sex relationships--Probably because the sample size is larger. Some other race alone and Black or African American alone make are disproportinaly represented in high income tiers ($80,000 and up.)
 
 
 ```{r Loading California ACS Data}
@@ -858,7 +866,7 @@ cleaned <- ca_pums %>%
     (CPLT %in% 1:4)) #filtering out N/A
 ```
 
-## CALIFORNIA
+CALIFORNIA
 
 ```{r California Pop}
 ca_pums_pop <-
@@ -914,9 +922,9 @@ leaflet() %>%
 
 ```
 
-#For this map we decided to include the actual counts of people in same-sex relationships rather than the percentages.This is another reminder of the sample size and how low it is in reality. 
+For this map we decided to include the actual counts of people in same-sex relationships rather than the percentages.This is another reminder of the sample size and how low it is in reality. 
 
-#To maintain a more observable color gradient, a few outlyers were filtered out. Palm Springs was the largest and had 320 people same-sex relationships.
+To maintain a more observable color gradient, a few outliers were filtered out. Palm Springs was the largest and had 320 people same-sex relationships.
 
 
 ```{r CA Race and Income}
@@ -995,7 +1003,7 @@ ca_pums_IRC <-
     )) 
 ```
 
-## Individual in same-sex relationship personal income by race
+Individual in same-sex relationship personal income by race
 ```{r Same-Sex CA Equity Analysis}
 ca_race_total <-
   ca_pums_IRC %>% 
@@ -1034,7 +1042,7 @@ ca_pums_IRC %>%
     )
   )
 ```
-#This equity analysis has the least consistent data of the three for same-sex (USA, Florida, California.) White Only make up a disproportiate ammount of people making $250,000 alone but other than that they are pretty proportionate at every tier. Asian alone make up a slightly higher proportion of people making $200,001 to $250,000 and a lower proportion of people making $250,000 or more. American Indians make up a slightly higher proportion of people making between $20,001 and $50,000. Two or more races is pretty proportionate at every income tier except '$250,000 or more.' The most observable trend in Black or African American, which shrink in proportions as the income tier increases, but to a smaller degree than the other equity analysis'. The income tiers between $0 and $50,000 are consistent with the total population data.
+This equity analysis has the least consistent data of the three for same-sex (USA, Florida, California.) White Only make up a disproportiate ammount of people making $250,000 alone but other than that they are pretty proportionate at every tier. Asian alone make up a slightly higher proportion of people making $200,001 to $250,000 and a lower proportion of people making $250,000 or more. American Indians make up a slightly higher proportion of people making between $20,001 and $50,000. Two or more races is pretty proportionate at every income tier except '$250,000 or more.' The most observable trend in Black or African American, which shrink in proportions as the income tier increases, but to a smaller degree than the other equity analysis'. The income tiers between $0 and $50,000 are consistent with the total population data.
 
 
 
@@ -1114,7 +1122,7 @@ ca_pums_IRC <-
     ))  
 ```
 
-## Individual in opposite-sex relationship personal income by race
+Individual in opposite-sex relationship personal income by race
 ```{r Op-Sex CA equity Analysis}
 ca_race_total <-
   ca_pums_IRC %>% 
@@ -1153,9 +1161,9 @@ ca_pums_IRC %>%
     )
   ) 
 ```
-#This is the most consisten equity analysis. There is a much larger proportion of Asian people in California than in Florida or USA. This data suggests that there is more racial inequity within same-sex couple groupings than opposite-sex couple groupings. 
+This is the most consisten equity analysis. There is a much larger proportion of Asian people in California than in Florida or USA. This data suggests that there is more racial inequity within same-sex couple groupings than opposite-sex couple groupings. 
 
-## EQUITY ANALYSIS BETWEEN SAME-SEX COUPLES AND OPPOSITE-SEX COUPLES DISAGGREGATED BY RACE 
+EQUITY ANALYSIS BETWEEN SAME-SEX COUPLES AND OPPOSITE-SEX COUPLES DISAGGREGATED BY RACE 
 
 ```{r Same-Sex making less than 50k}
 ca_pums_income_same <-
@@ -1221,8 +1229,8 @@ leaflet() %>%
   )
 
 ```
-#This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have same-sex couple data.
-#The is a large range of data. Some PUMAs have 100% low income same-sex couples and there is also a PUMA that has 0%.
+This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have same-sex couple data.
+The is a large range of data. Some PUMAs have 100% low income same-sex couples and there is also a PUMA that has 0%.
 
 
 ```{r Op-sex  making less than 50k}
@@ -1289,8 +1297,8 @@ leaflet() %>%
   )
 
 ```
-#This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have opposite-sex couple data.
-#This data is consistently arount the %40-%60 range.
+This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have opposite-sex couple data.
+This data is consistently arount the %40-%60 range.
 
 ```{r Income}
 ca_pums_IRC <-
@@ -1384,11 +1392,11 @@ ca_pums_IRC %>%
     )
   )
 ```
-#There does not appear to be a large change in proportions across different income tiers. Same-sex couples make up a slightly high proportion of people making $200,001 to $250,000.
+There does not appear to be a large change in proportions across different income tiers. Same-sex couples make up a slightly high proportion of people making $200,001 to $250,000.
 
 
 
-## White Alone
+White Alone
 
 ```{r same-sex white map}
 ca_pums_income_same <-
@@ -1455,7 +1463,7 @@ leaflet() %>%
 
 ```
 
-##This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have same-sex couple data.
+This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have same-sex couple data.
 
 ```{r op-sex white map}
 ca_pums_income_op <-
@@ -1522,9 +1530,9 @@ leaflet() %>%
 
 ```
 
-#This map reveals the percentage of people within each PUMA that make below $50,000. Grey PUMAs are PUMAs that did not have same-sex couple data.
+This map reveals the percentage of people within each PUMA that make below $50,000. Grey PUMAs are PUMAs that did not have same-sex couple data.
 
-#There appears to be a low average percentage of people making less than $50,000. PUMAS that are located in the Bay Area and near cities like Los Angeles have lower percentage than more inland PUMAS.
+There appears to be a low average percentage of people making less than $50,000. PUMAS that are located in the Bay Area and near cities like Los Angeles have lower percentage than more inland PUMAS.
 
 ```{r white income}
 ca_pums_IRC <-
@@ -1621,10 +1629,10 @@ ca_pums_IRC %>%
     )
   )
 ```
-#There does not appear to be a large change in proportions across different income tiers
+There does not appear to be a large change in proportions across different income tiers
 
 
-## Black or African American alone
+Black or African American alone
 
 ```{r map same-sex black}
 ca_pums_income_same <-
@@ -1690,7 +1698,8 @@ leaflet() %>%
   )
 
 ```
-#This map reveals the percentage of people within each PUMA that make below $50,000. Grey PUMAs are PUMAs that did not have same-sex couple data. There are many grey areas due to a small sample size and most of the PUMA's appear to be low-income.
+
+This map reveals the percentage of people within each PUMA that make below $50,000. Grey PUMAs are PUMAs that did not have same-sex couple data. There are many grey areas due to a small sample size and most of the PUMA's appear to be low-income.
 
 ```{r map op-sex black }
 ca_pums_income_op <-
@@ -1756,7 +1765,8 @@ leaflet() %>%
   )
 
 ```
-#This map reveals the percentage of people within each PUMA that make below $50,000. Grey PUMAs are PUMAs that did not have same-sex couple data.
+
+This map reveals the percentage of people within each PUMA that make below $50,000. Grey PUMAs are PUMAs that did not have same-sex couple data.
 
 ```{r income black}
 ca_pums_IRC <-
@@ -1854,10 +1864,10 @@ ca_pums_IRC %>%
     )
   )
 ```
-#There does not appear to be a large change in proportions across different income tiers. Same-sex couples make up a larger proportion of people making $200,001 to $250,000.
+There does not appear to be a large change in proportions across different income tiers. Same-sex couples make up a larger proportion of people making $200,001 to $250,000.
 
 
-## Asian American Alone
+Asian American Alone
 
 ```{r asian map same-sex}
 ca_pums_income_same <-
@@ -2143,7 +2153,7 @@ ca_pums_IRC <-
 ```
 
 
-## American Indian alone
+American Indian alone
 
 ```{r American Indian Same-Sex Map}
 ca_pums_income_same <-
@@ -2371,7 +2381,7 @@ ca_pums_IRC <-
     (RAC1P %in% 9)) #Two or More Races
 ```
 
-## Two or More Races
+Two or More Races
 ```{r Two or More Map Same-Sex}
 ca_pums_income_same <-
   cleaned %>%
@@ -2542,8 +2552,7 @@ ca_pums_IRC %>%
 ``` 
 
 
-
-## Same-Sex gender Equity Analysis 
+Same-Sex gender Equity Analysis 
 
 ```{r Same-Sex Gender Equity Analysis Map Average}
 ca_pums_income_gender <-
@@ -2885,7 +2894,7 @@ ca_pums_IRC %>%
 ```
 
 
-## Equity Analysis of single gender and relationship type
+Equity Analysis of single gender and relationship type
 
 ```{r men average}
 ca_pums_income_male <-
@@ -3254,689 +3263,6 @@ ca_pums_IRC %>%
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-# ```{r}
-# census_race_categories <-
-#   c(
-#       "White alone",
-#       "Black or African American alone",
-#       "American Indian alone",
-#       "Alaska Native alone",
-#       "American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races",
-#        "Asian alone",
-#        "Native Hawaiian and Other Pacific Islander alone",
-#        "Some Other Race alone",
-#        "Two or More Races")
-# ```
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# ```{r setup, include=FALSE}
-# knitr::opts_chunk$set(
-# 	echo = F,
-# 	message = FALSE,
-# 	warning = FALSE
-# )
-# ```
-# 
-# ```{r library}
-# library(tidyverse)
-# library(sf)
-# library(tigris)
-# library(mapview)
-# library(leaflet)
-# library(censusapi)
-# library(gtools)
-# Sys.setenv(CENSUS_KEY="9fbd5ddd430b595b8f3715733cae2b75c18be92e")
-# ```
-# 
-# ## SAME-SEX AND RACE EQUITY ANALYSIS
-# ```{r loading US ACS}
-# # pums_2019_1yru <- getCensus(
-# #   name = "acs/acs1/pums",
-# #   vintage = 2019,
-# #   region = "public use microdata area:*", 
-# #   regionin = "state:1,2,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,44,45,46,47,48,49,50,51,53,54,55,56",
-# #   vars = c(
-# #     "SERIALNO", #Unique ID for each household
-# #     "SPORDER", #Person number
-# #     "PWGTP", #Total number of people
-# #     "CPLT", #Couple Type
-# #     "PINCP", #Total Persons Income
-# #     "RAC1P" #Recorded Detailed Race Code
-# #   )
-# # )
-# # saveRDS(pums_2019_1yru, "usa_pums.rds")
-# ```
-# 
-# ```{r ACS US}
-# pums_2019_1yru <- readRDS("usa_pums.rds")
-# us_pumas <-
-#   pumas(state = NULL, cb = T, progress_bar = F)
-# counties <-
-#   counties(state = NULL, cb = T, progress_bar = F)
-# us_pumas <-
-#   us_pumas %>% 
-#   st_centroid() %>% 
-#   .[counties, ] %>% 
-#   st_drop_geometry() %>% 
-#   left_join(us_pumas %>% select(GEOID10)) %>% 
-#   st_as_sf()
-# us_pums <-
-#   pums_2019_1yru %>% 
-#   mutate(
-#     PUMA = str_pad(public_use_microdata_area,5,"left","0")
-#   ) %>% 
-#   filter(PUMA %in% us_pumas$PUMACE10)
-# ```
-# 
-# 
-# ```{r cleaned us}
-# cleaned <- us_pums %>%
-#   mutate(
-#     SPORDER = as.numeric(SPORDER),
-#     CPLT = as.numeric(CPLT)
-#   ) %>% 
-#   filter(
-#     (SPORDER %in% 1:2), #Only using head of household data so that household income is not double counted thus skewing results.
-#     (CPLT %in% 1:4)) #filtering out N/A
-# ```
-# 
-# ```{r us pop data}
-# us_pums_pop <-
-#   cleaned %>%
-#   filter(
-#     (RAC1P %in% c(1,2,3,6,9))) %>% 
-#   mutate(
-#     same_sex = ifelse(
-#         (CPLT == 2)|(CPLT == 4),
-#         1,
-#         0
-#   )) %>% 
-#   group_by(PUMA) %>% 
-#   summarize(
-#     samesex = sum(same_sex, na.rm = T),
-#     total_pop = sum(CPLT, na.rm = T)
-#   ) %>% 
-#   mutate(
-#     percent = samesex/total_pop*100
-#   ) %>% 
-#     left_join(
-#     us_pumas %>% 
-#       select(PUMACE10),
-#     by = c("PUMA" = "PUMACE10")
-#   ) %>% 
-#   st_as_sf()
-# ```
-# 
-# 
-# ```{r map US}
-# couple_pal <- colorNumeric(
-#   palette = "Blues",
-#   domain = 
-#     c(0,5)
-# )
-# leaflet() %>% 
-#   addProviderTiles(providers$CartoDB.Positron) %>% 
-#   addPolygons(
-#     data = us_pums_pop, 
-#     fillColor = ~couple_pal (percent),
-#     color = "white",
-#     opacity = 0.5,
-#     fillOpacity = 0.75,
-#     weight = 1,
-#     label = ~paste0(
-#       round(percent*100)/100,
-#       "% same-sex couples"
-#     ),
-#     highlightOptions = highlightOptions(
-#       weight = 2,
-#       opacity = 1
-#     )
-#   ) %>% 
-#   addLegend(
-#     data = us_pums_pop,
-#     pal = couple_pal,
-#     values = 0:5,
-#     title = "% same-sex relationships"
-#   )
-# 
-# 
-# 
-# 
-# ```{r}
-# ca_income_race <- 
-#   1:9 %>% 
-#   map_dfr(function(x){
-#     race <- cleaned %>%
-#   mutate(
-#     RAC1P = as.numeric(RAC1P)
-#   ) %>% 
-#   filter(
-#     (RAC1P %in% census_race_categories[x])) %>% 
-#   mutate(
-#     PWGTP = as.numeric(PWGTP),
-#     HINCP = as.numeric(HINCP),
-#     Same_sex_household = ifelse(
-#         (CPLT == 2)|(CPLT == 4), 
-#       "Same sex couple",
-#       "Opposite sex couple"
-#     ),
-#     income =  ifelse(
-#       (HINCP <= 10000),
-#        "$10,000 or less",
-#       HINCP
-#     ),
-#     income = ifelse(
-#       (HINCP > 10000 & HINCP <= 20000),
-#        "$10,001 to $20000",
-#       income
-#     ),
-#     income = ifelse(
-#       (HINCP > 20000 & HINCP <= 30000),
-#        "$20,001 to $30,000",
-#       income
-#     ),
-#     income = ifelse(
-#       (HINCP > 30000 & HINCP <= 40000),
-#        "$30,001 to $40,000",
-#       income
-#     ),
-#     income = ifelse(
-#       (HINCP > 40000 & HINCP <= 50000),
-#        "$40,001 to $50,000",
-#       income
-#     ),
-#     income = ifelse(
-#       (HINCP > 50000 & HINCP <= 75000),
-#        "$50,001 to $75,000",
-#       income
-#     ),
-#     income = ifelse(
-#       (HINCP > 75000 & HINCP <= 100000),
-#        "$75,001 to $100,000",
-#       income
-#     ),
-#     income = ifelse(
-#       (HINCP > 100000 & HINCP <= 150000),
-#        "$100,001 to $150,000",
-#       income
-#     ),
-#     income = ifelse(
-#       (HINCP > 150000 & HINCP <= 200000),
-#        "$150,001 to $200,000",
-#       income
-#     ),
-#     income = ifelse(
-#       (HINCP > 200000),
-#        "$200,001 or more",
-#       income
-#     )) %>% 
-#   group_by(income, Same_sex_household) %>% 
-#   summarize(estimate = sum(PWGTP)) %>% 
-#   ggplot() +
-#   geom_bar(
-#     aes(
-#       x = income %>% factor(mixedsort(order)),
-#       y = estimate,
-#       fill = Same_sex_household
-#     ),
-#     stat = "identity",
-#     position = "stack"
-#   ) +
-#   labs(
-#     x = "Household income",
-#     y = "Number of households",
-#     title = "Bay Area household income by couple type",
-#     fill = "Couple Type"
-#   ) +
-#   coord_flip() +
-#   theme(
-#     legend.position = "bottom",
-#     legend.direction = "vertical"
-#   )  +
-#   guides(
-#     fill = guide_legend(
-#       reverse = T
-#     )
-#   )
-#   })
-# 
-# ```          
-#           
-#           
-#           
-#           
-#     getCensus(
-#       name = "acs/acs1/pums",
-#       vintage = 2019,
-#       region = "public use microdata area:*", 
-#       regionin = "state:06",
-#       vars = c(
-#         "SERIALNO", #Unique ID for each household
-#         "SPORDER", #Person number
-#         "PWGTP", #Total number of people
-#         "WGTP", #Housing Weight
-#         "HINCP", #Household Income
-#         "CPLT", #Couple Type
-#         "FINCP", #Family Income
-#         "PINCP", #Total Persons Income
-#         "RAC1P" #Recorded Detailed Race Code
-#       )
-#     ) %>%
-#       select(!c(GEO_ID,state,NAME) & !ends_with(c("EA","MA","M"))) %>%
-#       pivot_longer(
-#         ends_with("E"),
-#         names_to = "name",
-#         values_to = "estimate"
-#       ) %>%
-#       left_join(
-#         ca_pums %>% 
-#           select(name, label)
-#       ) %>% 
-#       select(-name) %>% 
-#       separate(
-#         label,
-#         into = c(NA,NA,"income"),
-#         sep = "!!"
-#       ) %>% 
-#       filter(!is.na(income)) %>% 
-#       mutate(race = census_race_categories[x])
-#   })
-# ```
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-# 
-#       (HINCP < 10000),
-#       "Less than 10,000",
-#       (HINCP > 10000),
-#       "More than 10,000",
-#       0
-#     ))
-#     
-#    
-#     
-#     
-#     # IR = ifelse(
-#     #   SERIALNO == SERIALNO|RAC1P!=RAC1P,
-#     #   1,
-#     #   0
-#     # )
-#     # )
-#     # 
-#     # 
-# 
-# # IRC_compare <-   #Attempting to pull out Interracial couples into new data set so we can compare races
-# #   ca_pums_IRC %>% 
-# #   mutate(
-# #     PWGTP = as.numeric(PWGTP),
-# #     SERIALNO = as.numeric(SERIALNO)) %>% 
-# #   if(SERIALNO == SERIALNO) {
-# #     mutate(
-# #     PWGTP = as.numeric(PWGTP),
-# #     Same_sex_household = ifelse(
-# #         (CPLT == 2)|(CPLT == 4), 
-# # 
-# #       1,
-# #       0
-# #     )) 
-# #   }
-# ##Can't figure out how to separate interracial couples--Trying to do if statement
-# #if {same serialno but different races put them in this data set or create new column}
-# ```
-#  
-# ```{r}
-# ca_pums_IRC %>% 
-#   group_by(HINCP, Same_sex_household) %>% 
-#   summarize(estimate = sum(PWGTP)) %>% 
-#   ggplot() +
-#   geom_bar(
-#     aes(
-#       x = HINCP,
-#       y = estimate,
-#       fill = Same_sex_household
-#     ),
-#     stat = "identity",
-#     position = "stack"
-#   ) +
-#   labs(
-#     x = "Household income",
-#     y = "Number of households",
-#     title = "Bay Area household income by couple type",
-#     fill = "Couple Type"
-#   )
-# ``` 
-#  
-#  
-#  
-#  
-#     
-# ```{r}
-# census_race_categories <- data.frame(
-#   code = c(1,2,3,4,5,6,7,8,9),
-#   category =
-#     c(
-#       "White alone",
-#       "Black or African American alone",
-#       "American Indian alone",
-#       "Alaska Native alone",
-#       "American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races",
-#        "Asian alone",
-#        "Native Hawaiian and Other Pacific Islander alone",
-#        "Some Other Race alone",
-#        "Two or More Races"
-#     ))
-# ```
-#   
-# ```{r}
-# census_race_categories <-
-#   c(
-#       "White alone",
-#       "Black or African American alone",
-#       "American Indian alone",
-#       "Alaska Native alone",
-#       "American Indian and Alaska Native tribes specified; or American Indian or Alaska Native, not specified and no other races",
-#        "Asian alone",
-#        "Native Hawaiian and Other Pacific Islander alone",
-#        "Some Other Race alone",
-#        "Two or More Races")
-# ```
-# 
-# ```{r}
-# ca_income_race <- 
-#   1:9 %>% 
-#   map_dfr(function(x){
-#     getCensus(
-#       name = "acs/acs1/pums",
-#       vintage = 2019,
-#       region = "public use microdata area:*", 
-#       regionin = "state:06",
-#       vars = c(
-#         "SERIALNO", #Unique ID for each household
-#         "SPORDER", #Person number
-#         "PWGTP", #Total number of people
-#         "WGTP", #Housing Weight
-#         "HINCP", #Household Income
-#         "CPLT", #Couple Type
-#         "FINCP", #Family Income
-#         "PINCP", #Total Persons Income
-#         "RAC1P" #Recorded Detailed Race Code
-#       )
-#     ) %>%
-#       select(!c(GEO_ID,state,NAME) & !ends_with(c("EA","MA","M"))) %>%
-#       pivot_longer(
-#         ends_with("E"),
-#         names_to = "name",
-#         values_to = "estimate"
-#       ) %>%
-#       left_join(
-#         ca_pums %>% 
-#           select(name, label)
-#       ) %>% 
-#       select(-name) %>% 
-#       separate(
-#         label,
-#         into = c(NA,NA,"income"),
-#         sep = "!!"
-#       ) %>% 
-#       filter(!is.na(income)) %>% 
-#       mutate(race = census_race_categories[x])
-#   })
-# ```
-#  
-# ```{r}
-# ca_cup <-
-#   getCensus(
-#       name = "acs/acs1/pums",
-#       vintage = 2019,
-#       region = "public use microdata area:*", 
-#       regionin = "state:06",
-#       vars = c(
-#         "SERIALNO", #Unique ID for each household
-#         "SPORDER", #Person number
-#         "PWGTP", #Total number of people
-#         "WGTP", #Housing Weight
-#         "HINCP", #Household Income
-#         "CPLT", #Couple Type
-#         "FINCP", #Family Income
-#         "PINCP", #Total Persons Income
-#         "RAC1P") #Recorded Detailed Race Code
-#   ) %>%
-#   left_join(
-#     ca_pums_IRC %>% 
-#       select(SERIALNO, public_use_microdata_area)
-#   ) 
-# 
-# ```
-# %>% 
-#   select(-name) %>% 
-#   separate(
-#     label,
-#     into = c(NA,NA,"income"),
-#     sep = "!!"
-#   ) %>% 
-#   filter(!is.na(income))
-# ```  
-#   
-#   ,
-#     White_Low_Income = ifelse(
-#       (RAC1P == 1) & (HINCP > 100000),
-#       1,
-#       0
-#     ),
-#     Not_White_Low_Income = ifelse(
-#       (RAC1P != 1) & (HINCP > 100000),
-#       1,
-#       0)) 
-# ```
-# 
-# ```{r}
-# bay_pums_couple <-
-#   cleaned %>% 
-#   Same_sex_household = ifelse(
-#         (CPLT == 2)|(CPLT == 4), 
-#         WGTP,
-#         0)
-# # %>% 
-#   # group_by(PUMA) %>% 
-#   # summarize(
-#   #   PERSON1 =
-#   #     sum(Person1, na.rm =T)
-#   # ) 
-# ```
-# ```
-# 
-# ```{r}
-# bay_pums_couple <-
-#   cleaned %>%
-#   mutate(
-#     WGTP = as.numeric(WGTP),
-#     SPORDER = as.numeric(SPORDER),
-#     partner1 = ifelse(
-#       (SPORDER == 1),
-#       WGTP,
-#       0
-#     ),
-#     partner2 = ifelse(
-#       (SPORDER == 2),
-#       WGTP,
-#       0
-#     ) %>% 
-#   group_by(PUMA) %>%
-#   summarize(
-#     partner1 =
-#       sum(partner1, na.rm =T),
-#     partner2 =
-#       sum(partner2, na.rm =T))
-#   )
-# ```
-# 
-# 
-# 
-#     
-#     ,
-#     Same_sex_household = ifelse(
-#       (HINCP < 100000) &
-#         (CPLT == 2)|(CPLT == 4), 
-#         
-#       WGTP,
-#       0
-#     ),
-#     Opposite_sex_household = ifelse(
-#       (HINCP < 100000) &
-#         (CPLT == 1)|(CPLT == 3),
-#       WGTP,
-#       0
-#     ),
-#     White = ifelse(
-#       (SERIALNO == 1) &
-#       (RAC1P == 1),
-#       WGTP,
-#       0
-#     )
-#     
-#     
-#     ) %>% 
-#   group_by(PUMA) %>%
-#   summarize(
-#     sum_same_sex_household =
-#       sum(Same_sex_household, na.rm =T),
-#     sum_opposite_sex_household =
-#       sum(Opposite_sex_household, na.rm =T),
-#     partner1 =
-#       sum(partner1, na.rm =T),
-#     partner2 =
-#       sum(partner2, na.rm =T)%>% 
-#   left_join(
-#     bay_pumas %>% 
-#       select(PUMACE10),
-#     by = c("PUMA" = "PUMACE10")
-#   ) %>% 
-#   st_as_sf()
-#   ) 
-# ```
-# 
-# ```{r}
-# bay_pums_couple <-
-#   cleaned %>%
-#   mutate(
-#     WGTP = as.numeric(WGTP),
-#     partner1 = ifelse(
-#       (SPORDER == 1),
-#       WGTP,
-#       0
-#     ),
-#     partner2 = ifelse(
-#       (SPORDER == 2),
-#       WGTP,
-#       0
-#     ),
-#     Same_sex_household = ifelse(
-#       (HINCP < 100000) &
-#         (CPLT == 2)|(CPLT == 4), 
-#         
-#       WGTP,
-#       0
-#     ),
-#     Opposite_sex_household = ifelse(
-#       (HINCP < 100000) &
-#         (CPLT == 1)|(CPLT == 3),
-#       WGTP,
-#       0
-#     ),
-#     White = ifelse(
-#       (SERIALNO == 1) &
-#       (RAC1P == 1),
-#       WGTP,
-#       0
-#     )
-#     
-# 
-# 
-# 
-# 
-# ```
-# 
-# 
-# ```{r}
-# acs_vars_2019_5yr <-
-#   listCensusMetadata(
-#     name = "2019/acs/acs5",
-#     type = "variables"
-#   )
-# ```
-# 
-# 
-# ```{r}
-# veteran <-
-#     getCensus(
-#       name = "acs/acs5",
-#       vintage = 2019,
-#       region = "county:055",
-#       regionin = "state:06",
-#       vars = "group(S2101)" 
-#     ) %>%
-#       select(!c(GEO_ID,state,NAME,county) & !ends_with(c("EA","MA","M"))) %>%
-#       pivot_longer(
-#         ends_with("E"),
-#         names_to = "name",
-#         values_to = "estimate"
-#       ) %>%
-#       left_join(
-#         acs_vars_2019_5yr %>% 
-#           select(name, label)
-#       )
-# ```
-# 
-# ##How would we filter out just first two people to determine their races? Is sample size too small?
-# 
-# 
-# ##Veterans, Jobs, Race< which war, income
-# 
-# 
-# 
-# 
-# 
-# 
-# 
 
 
 
