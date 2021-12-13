@@ -26,17 +26,17 @@ Sys.setenv(CENSUS_KEY="9fbd5ddd430b595b8f3715733cae2b75c18be92e")
 
 <br>
 
-<br>
 
 # Introduction & Motivation: 
 
-According to the United States Census Bureau, households with same-sex couples have a higher median income than households with opposite-sex couples: $107,200 and $96,930 respectivly. This statistic however does not take into account many variables. For example, when the data is diaggregated by gender, the median household income of same-sex female households is only $95,720 which is less than the median for opposite-sex couples. Our project disaggregates the household incomes of same-sex and opposite-sex couples by race (white and not-white.) Since same-sex married couples account for only 1% of the married couple households in the United States and only 5.1% of unmarried couples, we will determine the median as a percentage of the total population of their grouping. We also do not plan on taking into account married or unmarried status since opposite-sex couples have a much higher marriage rate (88%) than same-sex couples (58%). Disaggregating the data will reveal whether or not same-sex couples of different races actually have a higher median income as opposite-sex couples of different races. 
+According to the United States Census Bureau, households with same-sex couples have a higher median income than households with opposite-sex couples: $107,200 and $96,930 respectively. This statistic, however, does not take into account many other factors that can impact a same-sex household. For example, when the data is diaggregated by gender, the median household income of same-sex female households is only $95,720 which is less than the median for opposite-sex couples. This raises several questions about how intersectional identities might impact same-sex and opposite-sex couples differently. Is the ratio of personal income for men to women different for individuals from same-sex couples versus opposite-sex couples? What happens when the data is disaggregated by race? Are same-sex couples from certain racial groups disproportionately low-income when compared to their opposite-sex counterparts?
 
-One challenge will be accounting for the races of both people in the relationship. We could either use only the race of the first person in the couple to determine the couple’s race (knowing this oversimplification would cause a certain amount of error), or we could try to find the race of both people in the couple and duplicate the data point for each racial category that it fits under. Alternately, we could exclude interracial couples from the data set, but that means that we would be cutting down the population of same-sex couples even more because a large percentage are interracial.
+In this project, we analyze the personal incomes of individuals in same-sex and opposite-sex couples, and disaggregate the data by race, couple type, and gender. Using Public Use Microdata Sample (PUMS) data from 2019, we are able to perform equity analyses of personal income by these three factors. Since same-sex married couples account for only 1% of the married couple households in the United States and only 5.1% of unmarried couples, we decided to combine individuals in married and unmarried relationships for both the same-sex couples group and the opposite-sex couples group. Combining the married/unmarried statuses into a more general “relationship” that is either same-sex or opposite-sex is especially important given that opposite-sex couples have a much higher marriage rate (88%) than same-sex couples (58%).
+
+The scope and robustness of our analysis was sometimes limited by the availability of certain data—some regions in the United States had no data for same-sex couples, while certain racial groups had too little data to be included. Fortunately, we were able to overcome these limitations in a couple ways. First, we analyzed national data and then focused in on two states that had both racial diversity and sufficient same-sex couple data to perform more meaningful analysis. Second, we filtered out the racial categories that didn’t have sufficient data on individuals in same-sex couples. In the remainder of this report, we’ve included our sources for background information and data, a roadmap describing the flow of our analysis, a link to our interactive Dashboard, three sections of data visualization and analysis, and our concluding thoughts and takeaways.
 
 <br> 
 
-<br> 
 
 <br>
 
@@ -44,23 +44,21 @@ One challenge will be accounting for the races of both people in the relationshi
 
 <br>
 
-### Background sources:
+#### Background:
 1. https://www.census.gov/library/stories/2020/09/same-sex-married-couples-have-higher-income-than-opposite-sex-married-couples.html
 2. https://www.seattletimes.com/nation-world/married-gay-couples-beat-straight-couples-in-income/
 3. https://hbr.org/2017/12/gay-men-used-to-earn-less-than-straight-men-now-they-earn-more
 4. https://www.pewresearch.org/fact-tank/2021/07/07/on-some-demographic-measures-people-in-same-sex-marriages-differ-from-those-in-opposite-sex-marriages/
 
 
-#### Data source:
-Dataset: 
+#### Data:
+
+##### Dataset: 
 ACS 1-Year Estimates 1-Year Estimates-Public Use Microdata Sample (2019)
-Variables used:
-"SERIALNO" = Unique ID for each household
-"SPORDER" = Person number
-"PWGTP" = Total number of people
-"CPLT" = Couple Type
-PINCP" = Total Persons Income
-"RAC1P" = Recorded Detailed Race Code
+
+##### Variables used:
+"SERIALNO" = Unique ID for each household, "SPORDER" = Person number, "PWGTP" = Total number of people, "CPLT" = Couple Type, “PINCP" = Total Persons Income, "RAC1P" = Recorded Detailed Race Code, and “SEX” = Individual’s sex.
+
 
 <br>
 
@@ -69,7 +67,15 @@ PINCP" = Total Persons Income
 <br>
 
 # Roadmap
-In the following sections of data visualization and analysis, we split the analysis into three parts, each one focusing on disaggregating a different aspect of personal identity. Part 1 disaggregates by couple type by doing an equity analysis of personal income by race for first same-sex and then opposite sex couples. This the broadest analysis, and displays data for three geographic regions: the whole USA, Florida, and California. Parts 2 and 3 do a deeper dive into California data alone. Part 1 disaggregates the data by race, performing equity analyses of personal income by couple-type for each race individually. Part 3 examines the impact of gender on equity, (Note: gender and sex are used interchangeably in this report--the only options for sex given on the survey are male and female, with no question about gender identity). 
+
+The following sections of data visualization and analysis have been split into three parts, each one focusing on disaggregating a different aspect of personal identity. We aim to use these data to more deeply understand the ways in which race and gender intersect with sexual orientation to influence an individual’s outcomes (using personal income as a proxy for success/opportunity).
+
+Part 1 disaggregates by couple type, performing an equity analysis of personal income by race for same-sex and then opposite-sex couples separately. This is the broadest analysis, and displays data for three geographic regions: the whole USA, Florida, and California. For the whole country and for Florida, we include maps that display the percent of all couples that are same-sex in each PUMA region. For California, we display the raw number of individuals in same-sex couples to provide another perspective on the lopsided quantity of same-sex vs. opposite-sex data. 
+
+Part 2 does a deeper dive into California data alone. We disaggregate the data by race, performing equity analyses of personal income by couple-type for each race individually. In addition to equity analyses, this section leverages Leaflet maps to display the percent of individuals in relationships that are low-income (making less than $50,000 annually), allowing us to visually compare the impact of couple type on socioeconomic status.
+
+Lastly, Part 3 continues to focus on California data and examines the impact of gender on income equity. We compare the income ratios of men to women for both couple types, and then compare income ratios of same-sex to opposite-sex individuals of the same gender. (Note: gender and sex are used interchangeably in this report--the only options for sex given on the survey are male and female, with no question about gender identity.)
+
 
 <br>
 
@@ -79,7 +85,7 @@ In the following sections of data visualization and analysis, we split the analy
 
 # Shiny Dashboard
 ### Link: https://dludeke.shinyapps.io/Final_KadenFDavidL/
-Alternate way to view the data presented in Part 1, where you can pick the region and couple type. 
+This Dashboard provides an alternate interactive way to view the data presented in Part 1, an equity analysis of personal income by race. The user can toggle between viewing data for same-sex couples and opposite-sex couples to visually compare the two. In addition, the user can choose between the three geographic regions: data from the entire country, data from Florida, and data from California. 
 
 <br>
 
@@ -981,7 +987,7 @@ cleaned <- ca_pums %>%
 <br>
 
 ## California:
-### Proportion of couples who are same-sex
+### Number of individuals in same-sex relationships
 ```{r California Pop}
 ca_pums_pop <-
   cleaned %>%
@@ -1036,7 +1042,7 @@ leaflet() %>%
 
 ```
 
-For this map we decided to include the actual counts of people in same-sex relationships rather than the percentages.This is another reminder of the sample size and how low it is in reality. 
+For this map we decided to include the actual counts of people in same-sex relationships rather than the percentages. This is another reminder of the sample size and how low it is in reality. 
 
 To maintain a more observable color gradient, a few outliers were filtered out. Palm Springs was the largest and had 320 people same-sex relationships.
 
@@ -1318,6 +1324,8 @@ This is the most consistent equity analysis. There is a much larger proportion o
 
 See below for each race individually.
 
+<br>
+
 ```{r Same-Sex making less than 50k}
 ca_pums_income_same <-
   cleaned %>%
@@ -1386,6 +1394,7 @@ leaflet() %>%
 This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have same-sex couple data.
 The is a large range of data. Some PUMAs have 100% low income same-sex couples and there is also a PUMA that has 0%.
 
+<br>
 
 ```{r Op-sex  making less than 50k}
 ca_pums_income_op <-
@@ -1555,6 +1564,8 @@ There does not appear to be a large change in proportions across different incom
 
 ### White Alone
 
+<br>
+
 ```{r same-sex white map}
 ca_pums_income_same <-
   cleaned %>%
@@ -1621,6 +1632,9 @@ leaflet() %>%
 ```
 
 This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have same-sex couple data.
+
+
+<br> 
 
 
 ```{r op-sex white map}
@@ -1749,6 +1763,8 @@ ca_pums_IRC <-
     (RAC1P %in% 1)) #white alone
 ```
 
+<br> 
+
 ```{r white cplt equity an}
 ca_white_total <-
   ca_pums_IRC %>% 
@@ -1795,6 +1811,8 @@ There does not appear to be a large change in proportions across different incom
 
 
 ### Black or African American alone
+
+<br>
 
 ```{r map same-sex black}
 ca_pums_income_same <-
@@ -1863,6 +1881,8 @@ leaflet() %>%
 
 This map reveals the percentage of people within each PUMA that make below $50,000. Grey PUMAs are PUMAs that did not have same-sex couple data. There are many grey areas due to a small sample size and most of the PUMA's appear to be low-income.
 
+<br>
+
 ```{r map op-sex black }
 ca_pums_income_op <-
   cleaned %>%
@@ -1929,6 +1949,8 @@ leaflet() %>%
 ```
 
 This map reveals the percentage of people within each PUMA that make below $50,000. Grey PUMAs are PUMAs that did not have same-sex couple data.
+
+<br>
 
 ```{r income black}
 ca_pums_IRC <-
@@ -2100,6 +2122,10 @@ leaflet() %>%
 
 ```
 
+This map reveals the percentage of Asian Americans in same-sex couples who make less than $50,000 per year. Lower percentages are concentrated around San Francisco and Los Angeles, while most of the rest of California either has a higher percentage of low-income or doesn’t have enough data.
+
+<br>
+
 ```{r Asian map op-sex}
 ca_pums_income_op <-
   cleaned %>%
@@ -2164,6 +2190,10 @@ leaflet() %>%
   )
 
 ```
+
+This map for opposite-sex Asian Americans shows a similar trend as for same-sex where lower percentages can be found near the major cities.
+
+<br>
 
 ```{r Asian Income}
 ca_pums_IRC <-
@@ -2260,6 +2290,9 @@ ca_pums_IRC %>%
     )
   )
 ```
+
+There doesn’t seem to be a trend in the way proportions change across income tiers. 
+
 
 ```{r American Indian Alone}
 ca_pums_IRC <-
@@ -2454,6 +2487,10 @@ leaflet() %>%
 
 ```
 
+These maps highlight the lack of data for American Indians in same-sex couples, where PUMAs that aren’t grey are either 100% or 0%. 
+
+<br>
+
 ```{r American Indian CPLT Equity An}
 ca_AI_total <-
   ca_pums_IRC %>% 
@@ -2492,6 +2529,8 @@ ca_pums_IRC %>%
     )
   )
 ```
+
+This low number of individuals making up this equity analysis unfortunately hinders our ability to draw any meaningful conclusions from the data.
 
 
 <br>
@@ -2685,6 +2724,10 @@ leaflet() %>%
 
 ```
 
+These maps reveal a similar trend to that found in Asian American data, with lower percentages clustered near the large cities and higher percentages found in more rural areas--with a characteristic lack of data for same-sex couples.
+
+<br>
+
 ```{r Two People Equity Analysis}
 ca_two_total <-
   ca_pums_IRC %>% 
@@ -2723,6 +2766,9 @@ ca_pums_IRC %>%
     )
   )
 ``` 
+
+This equity analysis for two or more races reveals a mostly constant proportion in each income tier, though for same-sex couples there is a slight over-representation in the lowest income bucket as well as the higher buckets (excluding the last one). 
+
 
 <br>
 
@@ -2883,6 +2929,12 @@ leaflet() %>%
     title = "Ratio of personal income Men:Women<br>Individuals in opposite-sex relationship"
   )
 ```
+
+
+In these maps, a ratio of 1 indicates men and women earn the same income in that given PUMA. Values higher than 1 represent men earning relatively more than women, while values lower than 1 mean the opposite. 
+
+
+While men in opposite-sex couples almost unilaterally out-earn women in opposite sex couples by varying multiples, there is more variation found in individuals from same-sex couples. Men and women in same-sex couples out-earn each other in turns depending on the PUMA, with relatively higher-income women more commonly found near cities. 
 
 
 ```{r same-Sex Gender Equity Analysis}
@@ -3243,6 +3295,10 @@ ca_pums_IRC %>%
   )
 ```
 
+This map and equity analysis show that whether men are in a same-sex or opposite-sex relationship doesn’t significantly impact their income tier or likehood of out-earning their male couple type counterparts. 
+
+<br>
+
 ```{r women ave}
 ca_pums_income_female <-
   cleaned %>%
@@ -3413,6 +3469,9 @@ ca_pums_IRC %>%
   )
 ```
 
+The map and equity analysis for women is similar to those for men. However, same-sex women may be slightly over-represented in middle and higher income tiers compared to their opposite-sex women. This is supported by the map, where more PUMAs appear to have ratios over 1, indicating women from same-sex relationships are out-earning their peers.
+
+
 <br>
 
 <br>
@@ -3421,6 +3480,21 @@ ca_pums_IRC %>%
 
 # Conclusion:
 
-After performing these analysis, we are able to draw several conclusions.... 
+In creating these analyses and data visualizations, we are able to draw several conclusions about the relationship between race, couple type, gender, and personal income. First, by comparing same- and opposite-sex equity analyses of income by race, we see that the disproportionate representation of certain races in certain income brackets is amplified when the individuals are from same-sex couples. 
+
+For instance, Black or African American people in opposite-set relationships are over-represented in lower income tiers (9.3% of the total and 9.9% of the “$20,000 or less” income bucket), but that over-representation increases drastically when looking at people from same-sex couples (10.8% of the total and 16.1% of the “$20,000 or less” income bucket). 
+
+A different trend emerges when comparing same-sex and opposite-sex couples that are Asian American. Those in opposite-sex couples are over-represented in higher income tiers (the “$80,001 to $100,000” bucket and above), while Asian Americans in same-sex relationships are only significantly over-represented in the last three income tiers (above $150,000 income) and even then by a lesser percentage difference. 
+
+(These differences can be seen visually by toggling between opposite-sex and same-sex couple types on the [Dashboard](https://dludeke.shinyapps.io/Final_KadenFDavidL/)). 
+
+These trends lend evidence to the hypothesis that intersectionality of marginalized identities compounds the systemic barriers those individuals face. This complicates the statistic cited in the introduction about households with same-sex couples having a higher median income than households with opposite-sex couples. Even if the average American in a same-sex couple may make a higher income, that average obscures the variations in data that surface when we disaggregate by race. That average statistic exists because white people make up such a large percentage of the population, and white Americans in same-sex couples have a consistently higher representation in high income tiers when compared to white Americans in opposite-sex couples. By disaggregating the data, we are able to see that racial inequity of income for Americans is compounded when those Americans are from same-sex couples.
+
+However, our findings have several important caveats, first and foremost of which is the fact that there is significantly less data on individuals from same-sex couples as compared to opposite-sex couples. This isn’t something that can be easily addressed, since queer people make up such a small percentage of the population. Additionally, it is important to qualify these conclusions with the understanding that personal income is not a perfect proxy for “success” or “well-being.” There may be many other factors that should be considered when examining the impact of race and gender on same-sex couples. 
+
+Further analysis on this topic could look at outcome factors other than personal income in order to see how other metrics are impacted by race and couple status. In addition, an analysis that keeps couples together and has many categories for different combinations of interracial couples would be better suited for comparison with the statistic about median household income. Lastly, a study conducted some time in the future could yield more robust results as more same-sex couples are reported by the survey.
 
 
+<br> 
+
+<br>
