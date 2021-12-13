@@ -1,5 +1,5 @@
 ---
-title: "Dashboard Final Project - Kaden & David"
+title: "Dashboard: Equity Analysis of Personal Income by Race with Variable Location & Couple Type"
 runtime: shiny
 output: 
   flexdashboard::flex_dashboard:
@@ -61,7 +61,7 @@ selectInput(
 Column
 -------------------------------------
 
-### Equity Analysis of Same-sex/Opposite-sex couples by Race
+### Equity Analysis:
 
 ```{r}
 plotlyOutput("plot")
@@ -106,8 +106,8 @@ observeEvent({
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = paste0(input$location, " personal income by race: Individuals in ", input$couple_type),
     fill = "Race"
   ) +
@@ -132,68 +132,5 @@ observeEvent({
   ignoreNULL = T)
 
 ```
-
-
-
-<!-- Column -->
-<!-- ------------------------------------- -->
-
-<!-- ```{r} -->
-
-
-
-<!-- ``` -->
-
-
-
-
-<!-- ### USA Map -->
-
-<!-- ```{r} -->
-<!-- leafletOutput("map") -->
-<!-- ``` -->
-
-<!-- ```{r, context = "server"} -->
-<!-- observeEvent({ -->
-<!--   input$year -->
-<!--   input$class}, -->
-<!--   {  -->
-<!-- couple_pal <- colorNumeric( -->
-<!--   palette = "Blues", -->
-<!--   domain =  -->
-<!--     c(0,5) -->
-<!-- ) -->
-
-<!-- output$map <- renderLeaflet({ -->
-<!-- leaflet() %>%  -->
-<!--   addProviderTiles(providers$CartoDB.Positron) %>%  -->
-<!--   addPolygons( -->
-<!--     data = usa_pums_pop,  -->
-<!--     fillColor = ~couple_pal (percent), -->
-<!--     color = "white", -->
-<!--     opacity = 0.5, -->
-<!--     fillOpacity = 0.75, -->
-<!--     weight = 1, -->
-<!--     label = ~paste0( -->
-<!--       round(percent*100)/100, -->
-<!--       "% same-sex couples" -->
-<!--     ), -->
-<!--     highlightOptions = highlightOptions( -->
-<!--       weight = 2, -->
-<!--       opacity = 1 -->
-<!--     ) -->
-<!--   ) %>%  -->
-<!--   addLegend( -->
-<!--     data = usa_pums_pop, -->
-<!--     pal = couple_pal, -->
-<!--     values = 0:5, -->
-<!--     title = "% same-sex relationships" -->
-<!--   ) -->
-<!-- }) -->
-
-<!-- }) -->
-
-<!-- ``` -->
-
 
 

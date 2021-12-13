@@ -1,14 +1,7 @@
 ---
-title: "KadenFlorsheimDavidLüdeke_Final"
+title: "Exploring the Relationship between Intersectional Identities and Personal Income for Same-sex Couples in the United States"
 author: "Kaden Florsheim & David Lüdeke"
-date: "11/14/2021"
-output: html_document
----
-
----
-title: "KadenFlorsheimDavidLüdeke_Final"
-author: "Kaden Florsheim & David Lüdeke"
-date: "11/14/2021"
+date: "12/12/2021"
 output: html_document
 ---
 
@@ -31,24 +24,72 @@ library(gtools)
 Sys.setenv(CENSUS_KEY="9fbd5ddd430b595b8f3715733cae2b75c18be92e")
 ```
 
-Dashboard --- https://dludeke.shinyapps.io/Final_KadenFDavidL/
+<br>
 
-## Introduction & Motivation: 
+<br>
+
+# Introduction & Motivation: 
 
 According to the United States Census Bureau, households with same-sex couples have a higher median income than households with opposite-sex couples: $107,200 and $96,930 respectivly. This statistic however does not take into account many variables. For example, when the data is diaggregated by gender, the median household income of same-sex female households is only $95,720 which is less than the median for opposite-sex couples. Our project disaggregates the household incomes of same-sex and opposite-sex couples by race (white and not-white.) Since same-sex married couples account for only 1% of the married couple households in the United States and only 5.1% of unmarried couples, we will determine the median as a percentage of the total population of their grouping. We also do not plan on taking into account married or unmarried status since opposite-sex couples have a much higher marriage rate (88%) than same-sex couples (58%). Disaggregating the data will reveal whether or not same-sex couples of different races actually have a higher median income as opposite-sex couples of different races. 
 
 One challenge will be accounting for the races of both people in the relationship. We could either use only the race of the first person in the couple to determine the couple’s race (knowing this oversimplification would cause a certain amount of error), or we could try to find the race of both people in the couple and duplicate the data point for each racial category that it fits under. Alternately, we could exclude interracial couples from the data set, but that means that we would be cutting down the population of same-sex couples even more because a large percentage are interracial.
 
+<br> 
 
-Sources:
-https://www.census.gov/library/stories/2020/09/same-sex-married-couples-have-higher-income-than-opposite-sex-married-couples.html
-https://www.seattletimes.com/nation-world/married-gay-couples-beat-straight-couples-in-income/
-https://hbr.org/2017/12/gay-men-used-to-earn-less-than-straight-men-now-they-earn-more
-https://www.pewresearch.org/fact-tank/2021/07/07/on-some-demographic-measures-people-in-same-sex-marriages-differ-from-those-in-opposite-sex-marriages/
+<br> 
+
+<br>
+
+### Sources:
+
+<br>
+
+### Background sources:
+1. https://www.census.gov/library/stories/2020/09/same-sex-married-couples-have-higher-income-than-opposite-sex-married-couples.html
+2. https://www.seattletimes.com/nation-world/married-gay-couples-beat-straight-couples-in-income/
+3. https://hbr.org/2017/12/gay-men-used-to-earn-less-than-straight-men-now-they-earn-more
+4. https://www.pewresearch.org/fact-tank/2021/07/07/on-some-demographic-measures-people-in-same-sex-marriages-differ-from-those-in-opposite-sex-marriages/
 
 
+#### Data source:
+Dataset: 
+ACS 1-Year Estimates 1-Year Estimates-Public Use Microdata Sample (2019)
+Variables used:
+"SERIALNO" = Unique ID for each household
+"SPORDER" = Person number
+"PWGTP" = Total number of people
+"CPLT" = Couple Type
+PINCP" = Total Persons Income
+"RAC1P" = Recorded Detailed Race Code
 
-SAME-SEX AND RACE EQUITY ANALYSIS
+<br>
+
+<br>
+
+<br>
+
+# Roadmap
+In the following sections of data visualization and analysis, we split the analysis into three parts, each one focusing on disaggregating a different aspect of personal identity. Part 1 disaggregates by couple type by doing an equity analysis of personal income by race for first same-sex and then opposite sex couples. This the broadest analysis, and displays data for three geographic regions: the whole USA, Florida, and California. Parts 2 and 3 do a deeper dive into California data alone. Part 1 disaggregates the data by race, performing equity analyses of personal income by couple-type for each race individually. Part 3 examines the impact of gender on equity, (Note: gender and sex are used interchangeably in this report--the only options for sex given on the survey are male and female, with no question about gender identity). 
+
+<br>
+
+<br>
+
+<br>
+
+# Shiny Dashboard
+### Link: https://dludeke.shinyapps.io/Final_KadenFDavidL/
+Alternate way to view the data presented in Part 1, where you can pick the region and couple type. 
+
+<br>
+
+<br>
+
+<br>
+
+# Part 1: Couple Type
+## Equity Analysis of Personal Income by Race, Disaggregated by Couple Type
+
 ```{r loading US ACS}
 # pums_2019_1yru <- getCensus(
 #   name = "acs/acs1/pums",
@@ -162,6 +203,10 @@ us_pums_pop <-
 saveRDS(us_pums_pop, "usa_pums_pop.rds")
 ```
 
+<br>
+
+## USA:
+### Proportion of couples who are same-sex
 ```{r map US}
 pums_2019_1yru <- readRDS("usa_pums_pop.rds")
 
@@ -197,6 +242,7 @@ leaflet() %>%
   )
 
 ```
+
 To maintain a more observable color gradient, a few outliers were filtered out. Palm Springs was the largest and had 17.62% same-sex couples.
 
 Most of the PUMA's had between 0% and 2% same-sex couples. It is important to note that in this assignment the populations that we are comparing (Same-sex couples vs. Opposite Sex Couples) are vastly different sizes.
@@ -205,7 +251,7 @@ Some races were filtered out of the US and Florida maps so that they will be eas
 
 Key Assumptions: We are assuming that the first two SPORDER (person numbers: 1, 2) are the two people in the relationship. Additionally, there are no census questions directly asking for sexualitys, but there are questions pertaining to the gender of the two heads of households and their marital status (married or unmarried). Since we are only working with couples data, the number of people that we are using in each data set is reduced. We are including unmarried couples and assuming that they are in a cohabitation agreement. 
 
-USA
+
 
 ```{r US race / income}
 us_pums_IRC <-
@@ -292,7 +338,10 @@ us_pums_IRC <-
 order <- c( "$20,000 or less", "$20,001 to $50,000","$50,001 to $80,000","$80,001 to $100,000","$100,001 to $150,000","$150,001 to $200,000","$200,001 to $250,000","$250,001 or more")
 ```
 
-Individual in same-sex relationship personal income by race
+<br> 
+
+## USA: 
+### Same-sex equity analysis
 ```{r us same-sex equity analysis}
 us_race_total <-
   us_pums_IRC %>%
@@ -323,8 +372,8 @@ usa_chart_data %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = "US personal income by race: Individuals in same-sex relationships",
     fill = "Race"
   ) +
@@ -339,7 +388,9 @@ usa_chart_data %>%
     )
   )
 ```
+
 Across the US, there are observable inequities among races within same-sex communities. White people make up a slightly disproportionate number of people making over $250,001 and also a disproportinatly low number of people making less than $20,000. Asian American people make up a consistent proportion of people at every level. Two or more Races makes up a disproportionate amount of people making less than $20,000. Black or African American people also make up a disproportinate number of people making less than $20,000 and then make up a disproportionately low number at higher income tiers ($50,000 and up.) This plot does suggest inequities that are particularly advantageous for white people and disadvantageous for black or African American people. 
+
 
 ```{r US race and income}
 us_pums_IRC <-
@@ -417,7 +468,10 @@ us_pums_IRC <-
     )) 
 ```
 
-Individual in opposite-sex relationship personal income by race
+<br> 
+
+## USA: 
+### Opposite-sex equity analysis
 ```{r US opposite-sex equity analysis}
 us_race_total <-
   us_pums_IRC %>% 
@@ -449,8 +503,8 @@ usa_chart_data_opp %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = "US personal income by race: Individuals in opposite-sex relationships",
     fill = "Race"
   ) +
@@ -524,8 +578,10 @@ cleaned <- fl_pums %>%
     (CPLT %in% 1:4)) #filtering out N/A
 ```
 
-FLORIDA
+<br> 
 
+## Florida:
+### Proportion of couples who are same-sex
 ```{r Florida Pop}
 fl_pums_pop <-
   cleaned %>%
@@ -586,10 +642,10 @@ leaflet() %>%
   )
 
 ```
+
 To maintain a more observable color gradient, a few outliers were filtered out. The largest PUMA was in Fort Lauderdale and it had 6.88% same-sex couples.
 
-We wanted to see how the inequities in another populous state would compare to the inequities in California. We chose Florida because it is the third largest state by population (after California and Texas), but it is also more 
-diverse than Texas. 
+We wanted to see how the inequities in another populous state would compare to the inequities in California. We chose Florida because it is the third largest state by population (after California and Texas), but it is also more diverse than Texas. 
 
 ```{r Florida Race and Income Same-Sex}
 fl_pums_IRC <-
@@ -672,7 +728,10 @@ fl_pums_IRC <-
     )) 
 ```
 
-Individual in same-sex relationship personal income by race
+<br> 
+
+## Florida: 
+### Same-sex equity analysis
 ```{r Florida Equity Analysis Same-Sex}
 fl_race_total <-
   fl_pums_IRC %>% 
@@ -704,8 +763,8 @@ fl_chart_data %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = "Florida personal income by race: Individuals in same-sex relationships",
     fill = "Race"
   ) +
@@ -720,6 +779,7 @@ fl_chart_data %>%
     )
   )
 ```
+
 We included 'Other Race' in this plot because the results were interesting. 
 Generally Florida's personal income equity analysis among people in same-sex relationships is less equitable than the national equity analysis conducted above. White people make up a disproportionately high proportion of people making between $80,001 and $250,000 and they are the only race included that appears in the $200,000 to $250,000 tier. This is most likely due the a lower sample size. Asian people make up a very low proportion of the overall population however they make up a significantly larger proportion of people making $250,001 and more. Black or African American data is similar to the national data. They make up a disproportionately low proportion of the highest income tier and a disproportionately high proportion of the lowest income tier.
 
@@ -805,7 +865,10 @@ fl_pums_IRC <-
     )) 
 ```
 
-Individual in opposite-sex relationship personal income by race
+<br> 
+
+## Florida:
+### Opposite-sex equity analysis
 ```{r Op-Sex Florida Equity An}
 fl_race_total <-
   fl_pums_IRC %>% 
@@ -837,8 +900,8 @@ fl_chart_data_opp %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = "Florida personal income by race: Individuals in opposite-sex relationships",
     fill = "Race"
   ) +
@@ -853,6 +916,7 @@ fl_chart_data_opp %>%
     )
   )
 ```
+
 The results for the race-income equity analysis of people in opposite-sex relationships resembles the national results more than the equtiy analysis of people in same-sex relationships--Probably because the sample size is larger. Some other race alone and Black or African American alone make are disproportinaly represented in high income tiers ($80,000 and up.)
 
 
@@ -914,8 +978,10 @@ cleaned <- ca_pums %>%
     (CPLT %in% 1:4)) #filtering out N/A
 ```
 
-CALIFORNIA
+<br>
 
+## California:
+### Proportion of couples who are same-sex
 ```{r California Pop}
 ca_pums_pop <-
   cleaned %>%
@@ -1051,7 +1117,10 @@ ca_pums_IRC <-
     )) 
 ```
 
-Individual in same-sex relationship personal income by race
+<br>
+
+## California: 
+### Same-sex equity analysis
 ```{r Same-Sex CA Equity Analysis RDS}
 ca_race_total <-
   ca_pums_IRC %>% 
@@ -1083,8 +1152,8 @@ ca_chart_data %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = "California personal income by race: Individuals in same-sex relationships",
     fill = "Race"
   ) +
@@ -1099,6 +1168,7 @@ ca_chart_data %>%
     )
   )
 ```
+
 This equity analysis has the least consistent data of the three for same-sex (USA, Florida, California.) White Only make up a disproportiate ammount of people making $250,000 alone but other than that they are pretty proportionate at every tier. Asian alone make up a slightly higher proportion of people making $200,001 to $250,000 and a lower proportion of people making $250,000 or more. American Indians make up a slightly higher proportion of people making between $20,001 and $50,000. Two or more races is pretty proportionate at every income tier except '$250,000 or more.' The most observable trend in Black or African American, which shrink in proportions as the income tier increases, but to a smaller degree than the other equity analysis'. The income tiers between $0 and $50,000 are consistent with the total population data.
 
 
@@ -1179,7 +1249,10 @@ ca_pums_IRC <-
     ))  
 ```
 
-Individual in opposite-sex relationship personal income by race
+<br>
+
+## California: 
+### Opposite-sex equity analysis
 ```{r Op-Sex CA equity Analysis}
 ca_race_total <-
   ca_pums_IRC %>% 
@@ -1211,8 +1284,8 @@ ca_chart_data_opp %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = "California personal income by race: Individuals in opposite-sex relationships",
     fill = "Race"
   ) +
@@ -1227,9 +1300,23 @@ ca_chart_data_opp %>%
     )
   ) 
 ```
-This is the most consisten equity analysis. There is a much larger proportion of Asian people in California than in Florida or USA. This data suggests that there is more racial inequity within same-sex couple groupings than opposite-sex couple groupings. 
 
-EQUITY ANALYSIS BETWEEN SAME-SEX COUPLES AND OPPOSITE-SEX COUPLES DISAGGREGATED BY RACE 
+This is the most consistent equity analysis. There is a much larger proportion of Asian people in California than in Florida or USA. This data suggests that there is more racial inequity within same-sex couple groupings than opposite-sex couple groupings. 
+
+<br>
+
+<br>
+
+<br>
+
+# Part 2: Race
+## Equity Analysis of Personal Income by Couple Type, Disaggregated by Race
+
+<br> 
+
+### All Races
+
+See below for each race individually.
 
 ```{r Same-Sex making less than 50k}
 ca_pums_income_same <-
@@ -1295,6 +1382,7 @@ leaflet() %>%
   )
 
 ```
+
 This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have same-sex couple data.
 The is a large range of data. Some PUMAs have 100% low income same-sex couples and there is also a PUMA that has 0%.
 
@@ -1348,7 +1436,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(percent*100)/100,
-      "% people in opposite-sex relationships with a personal income of less than $100,000"
+      "% people in opposite-sex relationships with a personal income of less than $50,000"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -1363,8 +1451,10 @@ leaflet() %>%
   )
 
 ```
+
 This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have opposite-sex couple data.
 This data is consistently arount the %40-%60 range.
+
 
 ```{r Income}
 ca_pums_IRC <-
@@ -1442,8 +1532,8 @@ ca_pums_IRC %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = "California personal income by couple type",
     fill = "Couple Type"
   ) +
@@ -1458,11 +1548,12 @@ ca_pums_IRC %>%
     )
   )
 ```
+
 There does not appear to be a large change in proportions across different income tiers. Same-sex couples make up a slightly high proportion of people making $200,001 to $250,000.
 
+<br>
 
-
-White Alone
+### White Alone
 
 ```{r same-sex white map}
 ca_pums_income_same <-
@@ -1513,7 +1604,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(percent*100)/100,
-      "% in same-sex relationships, white, and making less than $50,000"
+      "% in same-sex relationships (white) making less than $50,000"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -1524,12 +1615,13 @@ leaflet() %>%
     data = ca_pums_income_same,
     pal = couple_pal,
     values = 0:100,
-    title = "% in same-sex relationships, white, and making less than $50,000"
+    title = "% in same-sex relationships (white)<br>making less than $50,000"
   )
 
 ```
 
 This map reveals the percentage of people within each PUMA that make below $50,000 dollars. Grey PUMAs are PUMAs that did not have same-sex couple data.
+
 
 ```{r op-sex white map}
 ca_pums_income_op <-
@@ -1580,7 +1672,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(percent*100)/100,
-      "% in opposite-sex relationships, white, and making less than $50,000"
+      "% in opposite-sex relationships (white) making less than $50,000"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -1591,7 +1683,7 @@ leaflet() %>%
     data = ca_pums_income_op,
     pal = couple_pal,
     values = 0:100,
-    title = "% in opposite-sex relationships, white, and making less than $50,000"
+    title = "% in opposite-sex relationships (white)<br>making less than $50,000"
   )
 
 ```
@@ -1679,9 +1771,9 @@ ca_pums_IRC %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
-    title = "California household income by couple type",
+    x = "Personal income",
+    y = "Proportion of population",
+    title = "California white personal income by couple type",
     fill = "Couple Type"
   ) +
   coord_flip() +
@@ -1695,10 +1787,14 @@ ca_pums_IRC %>%
     )
   )
 ```
+
 There does not appear to be a large change in proportions across different income tiers
 
 
-Black or African American alone
+<br>
+
+
+### Black or African American alone
 
 ```{r map same-sex black}
 ca_pums_income_same <-
@@ -1749,7 +1845,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(percent*100)/100,
-      "% in same-sex relationships, black, and making less than $50,000"
+      "% in same-sex relationships (black) making less than $50,000"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -1760,7 +1856,7 @@ leaflet() %>%
     data = ca_pums_income_same,
     pal = couple_pal,
     values = 0:100,
-    title = "% in same-sex relationships, black, and making less than $50,000"
+    title = "% in same-sex relationships (black)<br>making less than $50,000"
   )
 
 ```
@@ -1816,7 +1912,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(percent*100)/100,
-      "% in opposite-sex relationships, black, and making less than $50,000"
+      "% in opposite-sex relationships (black) making less than $50,000"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -1827,7 +1923,7 @@ leaflet() %>%
     data = ca_pums_income_op,
     pal = couple_pal,
     values = 0:100,
-    title = "% in opposite-sex relationships, black, and making less than $50,000"
+    title = "% in opposite-sex relationships (black)<br>making less than $50,000"
   )
 
 ```
@@ -1914,9 +2010,9 @@ ca_pums_IRC %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
-    title = "California household income by couple type",
+    x = "Personal income",
+    y = "Proportion of population",
+    title = "California Black personal income by couple type",
     fill = "Couple Type"
   ) +
   coord_flip() +
@@ -1930,10 +2026,14 @@ ca_pums_IRC %>%
     )
   )
 ```
+
 There does not appear to be a large change in proportions across different income tiers. Same-sex couples make up a larger proportion of people making $200,001 to $250,000.
 
 
-Asian American Alone
+<br>
+
+
+### Asian American Alone
 
 ```{r asian map same-sex}
 ca_pums_income_same <-
@@ -1984,7 +2084,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(percent*100)/100,
-      "% people in white same-sex relationships with a personal income of less than $100,000"
+      "% in same-sex relationships (Asian American) with a personal income of less than $50,000"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -1995,7 +2095,7 @@ leaflet() %>%
     data = ca_pums_income_same,
     pal = couple_pal,
     values = 0:100,
-    title = "% same-sex relationships"
+    title = "% in same-sex relationships (Asian American)<br>with a personal income of less than $50,000"
   )
 
 ```
@@ -2049,7 +2149,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(percent*100)/100,
-      "% white people in opposite-sex relationships with a personal income of less than $100,000"
+      "% in opposite-sex relationships (Asian American) with a personal income of less than $50,000"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -2060,7 +2160,7 @@ leaflet() %>%
     data = ca_pums_income_op,
     pal = couple_pal,
     values = 0:100,
-    title = "% opposite-sex relationships"
+    title = "in opposite-sex relationships (Asian American)<br>with a personal income of less than $50,000"
   )
 
 ```
@@ -2144,9 +2244,9 @@ ca_pums_IRC %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
-    title = "California household income by couple type",
+    x = "Personal income",
+    y = "Proportion of population",
+    title = "California Asian American personal income by couple type",
     fill = "Couple Type"
   ) +
   coord_flip() +
@@ -2219,7 +2319,10 @@ ca_pums_IRC <-
 ```
 
 
-American Indian alone
+<br>
+
+
+### American Indian alone
 
 ```{r American Indian Same-Sex Map}
 ca_pums_income_same <-
@@ -2270,7 +2373,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(percent*100)/100,
-      "% people in white same-sex relationships with a personal income of less than $50,000"
+      "% in same-sex relationships (American Indian) with a personal income of less than $50,000"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -2281,7 +2384,7 @@ leaflet() %>%
     data = ca_pums_income_same,
     pal = couple_pal,
     values = 0:100,
-    title = "% same-sex relationships"
+    title = "% in same-sex relationships (American Indian)<br>with a personal income of less than $50,000"
   )
 
 ```
@@ -2335,7 +2438,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(percent*100)/100,
-      "% people in opposite-sex relationships with a personal income of less than $50,000"
+      "% in opposite-sex relationships (American Indian) with a personal income of less than $50,000"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -2346,7 +2449,7 @@ leaflet() %>%
     data = ca_pums_income_op,
     pal = couple_pal,
     values = 0:100,
-    title = "% opposite-sex relationships"
+    title = "% in opposite-sex relationships (American Indian)<br>with a personal income of less than $50,000"
   )
 
 ```
@@ -2373,9 +2476,9 @@ ca_pums_IRC %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
-    title = "California household income by couple type",
+    x = "Personal income",
+    y = "Proportion of population",
+    title = "California (American Indian) personal income by couple type",
     fill = "Couple Type"
   ) +
   coord_flip() +
@@ -2390,6 +2493,11 @@ ca_pums_IRC %>%
   )
 ```
 
+
+<br>
+
+
+### Two or More Races
 ```{r Two or more races-Income}
 ca_pums_IRC <-
   cleaned %>%
@@ -2447,7 +2555,6 @@ ca_pums_IRC <-
     (RAC1P %in% 9)) #Two or More Races
 ```
 
-Two or More Races
 ```{r Two or More Map Same-Sex}
 ca_pums_income_same <-
   cleaned %>%
@@ -2497,7 +2604,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(percent*100)/100,
-      "% people in white same-sex relationships with a personal income of less than $50,000"
+      "% in same-sex relationships (two or more races) with a personal income of less than $50,000"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -2508,7 +2615,7 @@ leaflet() %>%
     data = ca_pums_income_same,
     pal = couple_pal,
     values = 0:100,
-    title = "% same-sex relationships"
+    title = "% in same-sex relationships (two or more races)<br>with a personal income of less than $50,000"
   )
 
 ```
@@ -2562,7 +2669,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(percent*100)/100,
-      "% people in opposite-sex relationships with a personal income of less than $50,000"
+      "% in opposite-sex relationships (two or more races) with a personal income of less than $50,000"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -2573,7 +2680,7 @@ leaflet() %>%
     data = ca_pums_income_op,
     pal = couple_pal,
     values = 0:100,
-    title = "% opposite-sex relationships"
+    title = "% in opposite-sex relationships (two or more races)<br>with a personal income of less than $50,000"
   )
 
 ```
@@ -2600,9 +2707,9 @@ ca_pums_IRC %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
-    title = "California household income by couple type",
+    x = "Personal income",
+    y = "Proportion of population",
+    title = "California Two-or-More-Races personal income by couple type",
     fill = "Couple Type"
   ) +
   coord_flip() +
@@ -2617,9 +2724,14 @@ ca_pums_IRC %>%
   )
 ``` 
 
+<br>
 
-Same-Sex gender Equity Analysis 
+<br>
 
+<br>
+
+# Part 3: Sex
+## Equity Analysis of Personal Income by Race, Disaggregated by Sex
 ```{r Same-Sex Gender Equity Analysis Map Average}
 ca_pums_income_gender <-
   cleaned %>%
@@ -2655,7 +2767,7 @@ ca_pums_income_gender <-
   mutate(
     average_female_income = incomef/female,
     average_male_income = incomem/male,
-    ratio = average_female_income/average_male_income
+    ratio = average_male_income/average_female_income
   ) %>% 
     left_join(
     ca_pumas %>% 
@@ -2667,7 +2779,7 @@ ca_pums_income_gender <-
 couple_pal <- colorNumeric(
   palette = "Greens",
   domain = 
-    c(0,8.5)
+    c(0,5)
 )
 
 leaflet() %>% 
@@ -2681,7 +2793,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(ratio*100)/100,
-      "  Women:Men"
+      " Men:Women"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -2691,8 +2803,8 @@ leaflet() %>%
   addLegend(
     data = ca_pums_income_same,
     pal = couple_pal,
-    values = 0:8.5,
-    title = "Ratio of personal income Women:Men -- Individuals in same-sex relationship"
+    values = 0:5,
+    title = "Ratio of personal income Men:Women<br>Individuals in same-sex relationship"
   )
 ```
 
@@ -2731,7 +2843,7 @@ ca_pums_income_gender <-
   mutate(
     average_female_income = incomef/female,
     average_male_income = incomem/male,
-    ratio = average_female_income/average_male_income
+    ratio = average_male_income/average_female_income
   ) %>% 
     left_join(
     ca_pumas %>% 
@@ -2743,7 +2855,7 @@ ca_pums_income_gender <-
 couple_pal <- colorNumeric(
   palette = "Greens",
   domain = 
-    c(0,8.5)
+    c(0,5)
 )
 
 leaflet() %>% 
@@ -2757,7 +2869,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(ratio*100)/100,
-      "  Women:Men"
+      " Men:Women"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -2767,8 +2879,8 @@ leaflet() %>%
   addLegend(
     data = ca_pums_income_same,
     pal = couple_pal,
-    values = 0:8.5,
-    title = "Ratio of personal income Women:Men -- Individuals in opposite-sex relationship"
+    values = 0:5,
+    title = "Ratio of personal income Men:Women<br>Individuals in opposite-sex relationship"
   )
 ```
 
@@ -2849,10 +2961,10 @@ ca_pums_IRC %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = "California personal income by sex: Individuals in same-sex relationships",
-    fill = "Gender"
+    fill = "Sex"
   ) +
   coord_flip() +
   theme(
@@ -2942,10 +3054,10 @@ ca_pums_IRC %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = "California personal income by sex: Individuals in opposite-sex relationships",
-    fill = "Gender"
+    fill = "Sex"
   ) +
   coord_flip() +
   theme(
@@ -2960,8 +3072,7 @@ ca_pums_IRC %>%
 ```
 
 
-Equity Analysis of single gender and relationship type
-
+### Equity Analysis of single gender and relationship type
 ```{r men average}
 ca_pums_income_male <-
   cleaned %>%
@@ -3023,7 +3134,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(ratio*100)/100,
-      "  Same-Sex:Opposite-Sex"
+      "  Same-Sex:Opposite-Sex (men)"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -3034,7 +3145,7 @@ leaflet() %>%
     data = ca_pums_income_same,
     pal = couple_pal,
     values = 0:5,
-    title = "Ratio of personal income Same-Sex:Opposite-Sex-- Men"
+    title = "Ratio of personal income<br>Same-Sex:Opposite-Sex (Men)"
   )
   
 ```
@@ -3115,8 +3226,8 @@ ca_pums_IRC %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = "California personal income by couple type: Men",
     fill = "Couple Type"
   ) +
@@ -3193,7 +3304,7 @@ leaflet() %>%
     weight = 1,
     label = ~paste0(
       round(ratio*100)/100,
-      "  Same-Sex:Opposite-Sex"
+      "  Same-Sex:Opposite-Sex (Women)"
     ),
     highlightOptions = highlightOptions(
       weight = 2,
@@ -3204,7 +3315,7 @@ leaflet() %>%
     data = ca_pums_income_same,
     pal = couple_pal,
     values = 0:5,
-    title = "Ratio of personal income Same-Sex:Opposite-Sex-- Women"
+    title = "Ratio of personal income<br>Same-Sex:Opposite-Sex (Women)"
   )
   
 ```
@@ -3285,8 +3396,8 @@ ca_pums_IRC %>%
     position = "fill"
   ) +
   labs(
-    x = "Household income",
-    y = "Number of households",
+    x = "Personal income",
+    y = "Proportion of population",
     title = "California personal income by couple type: Women",
     fill = "Couple Type"
   ) +
@@ -3302,68 +3413,14 @@ ca_pums_IRC %>%
   )
 ```
 
+<br>
 
+<br>
 
+<br>
 
+# Conclusion:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+After performing these analysis, we are able to draw several conclusions.... 
 
 
